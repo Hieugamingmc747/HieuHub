@@ -1,6 +1,6 @@
 Config = {
-    namescript = "HieuRobloxHub",--Tên Script
+    namescript = "HieudzHub",--Tên Script
     logoscript = "121392703100194",--ID Logo Script
     tacgia = "HieuGamingMC"-- Tên Tác Giả
 }
-loadstring(game:httpget("https://raw.githubusercontent.com/tngaming123/vesion/refs/heads/main/scriptbffree.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/tngaming123/vesion/refs/heads/main/scriptbffree.lua"))()
