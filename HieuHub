@@ -1,6 +1,6 @@
 --// Khai báo UI
 local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Rayfield/main/source'))()
-local Window = Rayfield:CreateWindow({Name = "Blox Fruits Hub", LoadingTitle = "Blox Fruits Script", LoadingSubtitle = "by Alexander Aventaro Fischer"})
+local Window = Rayfield:CreateWindow({Name = "HieuDepTrai Hub", LoadingTitle = "Blox Fruits Script", LoadingSubtitle = "by Alexander Aventaro Fischer"})
 
 --// Tab Farm
 local FarmTab = Window:CreateTab("Farm", 4483362458)
