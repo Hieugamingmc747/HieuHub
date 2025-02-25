@@ -1,141 +1,56 @@
---// Khai báo UI
-local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Rayfield/main/source'))()
-local Window = Rayfield:CreateWindow({Name = "Blox Fruits Hub", LoadingTitle = "Blox Fruits Script", LoadingSubtitle = "by Alexander Aventaro Fischer"})
+-- Fake Lag Script for Blox Fruits
+local FakeLag = false
+local FakeLagButton = Instance.new("TextButton")
 
---// Tab Farm
-local FarmTab = Window:CreateTab("Farm", 4483362458)
+-- UI Setup
+FakeLagButton.Size = UDim2.new(0, 100, 0, 50)
+FakeLagButton.Position = UDim2.new(0.5, -50, 0.1, 0)
+FakeLagButton.Text = "FakeLag"
+FakeLagButton.Parent = game.CoreGui
+FakeLagButton.Draggable = true
+FakeLagButton.Active = true
+FakeLagButton.BackgroundColor3 = Color3.new(1, 0, 0)
 
-local FarmLevel = FarmTab:CreateToggle({
-    Name = "Auto Farm Level",
-    Callback = function(Value)
-        _G.AutoFarm = Value
-        while _G.AutoFarm do
-            local quest = game:GetService("ReplicatedStorage").Remotes:FindFirstChild("QuestEvent")
-            if quest then
-                quest:FireServer("StartQuest", "CurrentQuest")
-            end
-            for _, enemy in pairs(game.Workspace.Enemies:GetChildren()) do
-                if enemy:FindFirstChild("HumanoidRootPart") then
-                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = enemy.HumanoidRootPart.CFrame
-                    game:GetService("ReplicatedStorage").Remotes.Combat:FireServer("Attack")
+FakeLagButton.MouseButton1Click:Connect(function()
+    FakeLag = not FakeLag
+    FakeLagButton.BackgroundColor3 = FakeLag and Color3.new(0, 1, 0) or Color3.new(1, 0, 0)
+    if FakeLag then
+        spawn(function()
+            while FakeLag do
+                for _, player in pairs(game.Players:GetPlayers()) do
+                    if player ~= game.Players.LocalPlayer then
+                        local character = player.Character
+                        if character and character:FindFirstChild("HumanoidRootPart") then
+                            local lagClone = Instance.new("Part")
+                            lagClone.Size = Vector3.new(3, 6, 3)
+                            lagClone.Color = Color3.new(1, 0, 0)
+                            lagClone.Position = character.HumanoidRootPart.Position
+                            lagClone.Anchored = true
+                            lagClone.CanCollide = false
+                            lagClone.Parent = workspace
+
+                            local touchConnection
+                            touchConnection = lagClone.Touched:Connect(function(hit)
+                                local hitPlayer = game.Players:GetPlayerFromCharacter(hit.Parent)
+                                if hitPlayer == player then
+                                    hitPlayer.Character.Humanoid:TakeDamage(20)
+                                    touchConnection:Disconnect()
+                                    lagClone:Destroy()
+                                end
+                            end)
+                            
+                            lagClone.ChildAdded:Connect(function(child)
+                                if child:IsA("Explosion") or child:IsA("ParticleEmitter") or child:IsA("Beam") then
+                                    hitPlayer.Character.Humanoid:TakeDamage(30)
+                                end
+                            end)
+                            
+                            game:GetService("Debris"):AddItem(lagClone, 3)
+                        end
+                    end
                 end
+                wait(1.5)
             end
-            wait(1)
-        end
+        end)
     end
-})
-
-local FarmAura = FarmTab:CreateToggle({
-    Name = "Farm Aura",
-    Callback = function(Value)
-        _G.FarmAura = Value
-        while _G.FarmAura do
-            for _, enemy in pairs(game.Workspace.Enemies:GetChildren()) do
-                if enemy:FindFirstChild("HumanoidRootPart") then
-                    game:GetService("ReplicatedStorage").Remotes.Combat:FireServer("Attack", enemy)
-                end
-            end
-            wait(0.5)
-        end
-    end
-})
-
-local AutoRaid = FarmTab:CreateToggle({
-    Name = "Auto Raid",
-    Callback = function(Value)
-        _G.AutoRaid = Value
-        while _G.AutoRaid do
-            -- Code Auto Raid
-            wait(1)
-        end
-    end
-})
-
-local AutoSeaBeast = FarmTab:CreateToggle({
-    Name = "Auto Sea Beast",
-    Callback = function(Value)
-        _G.AutoSeaBeast = Value
-        while _G.AutoSeaBeast do
-            -- Code Auto Sea Beast
-            wait(1)
-        end
-    end
-})
-
---// Tab PvP
-local PvPTab = Window:CreateTab("PvP", 4483362458)
-
-local Aimbot = PvPTab:CreateToggle({
-    Name = "Aimbot",
-    Callback = function(Value)
-        _G.Aimbot = Value
-        while _G.Aimbot do
-            -- Aimbot Code
-            wait(0.1)
-        end
-    end
-})
-
-local ESP = PvPTab:CreateToggle({
-    Name = "ESP Player",
-    Callback = function(Value)
-        _G.ESP = Value
-        while _G.ESP do
-            -- ESP Code
-            wait(1)
-        end
-    end
-})
-
-local AimbotSilent = PvPTab:CreateToggle({
-    Name = "Aimbot Silent",
-    Callback = function(Value)
-        _G.AimbotSilent = Value
-        while _G.AimbotSilent do
-            -- Aimbot Silent Code
-            wait(0.1)
-        end
-    end
-})
-
-local AimbotFOV = PvPTab:CreateSlider({
-    Name = "Aimbot FOV",
-    Min = 50,
-    Max = 500,
-    Default = 150,
-    Callback = function(Value)
-        _G.AimbotFOV = Value
-    end
-})
-
---// Tab Misc
-local MiscTab = Window:CreateTab("Misc", 4483362458)
-
-local Teleport = MiscTab:CreateButton({
-    Name = "Teleport to Island",
-    Callback = function()
-        -- Teleport Code
-    end
-})
-
-local FruitNotifier = MiscTab:CreateToggle({
-    Name = "Fruit Notifier",
-    Callback = function(Value)
-        _G.FruitNotifier = Value
-        while _G.FruitNotifier do
-            -- Code Fruit Notifier
-            wait(5)
-        end
-    end
-})
-
-local FastAttack = MiscTab:CreateToggle({
-    Name = "Fast Attack",
-    Callback = function(Value)
-        _G.FastAttack = Value
-        while _G.FastAttack do
-            -- Code Fast Attack
-            wait(0.1)
-        end
-    end
-})
+end)
