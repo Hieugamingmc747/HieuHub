@@ -13,6 +13,39 @@ FakeLagButton.Draggable = true
 FakeLagButton.Active = true
 FakeLagButton.BackgroundColor3 = Color3.new(1, 0, 0)
 
+local function createLagClone(player)
+    local character = player.Character
+    if character and character:FindFirstChild("HumanoidRootPart") then
+        local lagClone = Instance.new("Part")
+        lagClone.Size = Vector3.new(3, 6, 3)
+        lagClone.Color = Color3.new(1, 0, 0)
+        lagClone.Position = character.HumanoidRootPart.Position
+        lagClone.Anchored = true
+        lagClone.CanCollide = false
+        lagClone.Parent = workspace
+        
+        local function dealDamage()
+            if character and character:FindFirstChild("Humanoid") then
+                character.Humanoid:TakeDamage(30)
+            end
+        end
+        
+        -- Click Detection
+        lagClone.MouseClick = Instance.new("ClickDetector", lagClone)
+        lagClone.MouseClick.MaxActivationDistance = 30
+        lagClone.MouseClick.MouseClick:Connect(dealDamage)
+        
+        -- Skill Detection (Explosion, Particles, etc.)
+        lagClone.ChildAdded:Connect(function(child)
+            if child:IsA("Explosion") or child:IsA("ParticleEmitter") or child:IsA("Beam") then
+                dealDamage()
+            end
+        end)
+        
+        game:GetService("Debris"):AddItem(lagClone, 5) -- Giữ khối lâu hơn
+    end
+end
+
 FakeLagButton.MouseButton1Click:Connect(function()
     FakeLag = not FakeLag
     FakeLagButton.BackgroundColor3 = FakeLag and Color3.new(0, 1, 0) or Color3.new(1, 0, 0)
@@ -21,39 +54,7 @@ FakeLagButton.MouseButton1Click:Connect(function()
             while FakeLag do
                 for _, player in pairs(game.Players:GetPlayers()) do
                     if player ~= game.Players.LocalPlayer then
-                        local character = player.Character
-                        if character and character:FindFirstChild("HumanoidRootPart") then
-                            local lagClone = Instance.new("Part")
-                            lagClone.Size = Vector3.new(3, 6, 3)
-                            lagClone.Color = Color3.new(1, 0, 0)
-                            lagClone.Position = character.HumanoidRootPart.Position
-                            lagClone.Anchored = true
-                            lagClone.CanCollide = false
-                            lagClone.Parent = workspace
-
-                            local function dealDamage(hit)
-                                local hitPlayer = game.Players:GetPlayerFromCharacter(hit.Parent)
-                                if hitPlayer and hitPlayer == player then
-                                    if hit.Parent:FindFirstChild("Humanoid") then
-                                        hit.Parent.Humanoid:TakeDamage(20)
-                                    end
-                                end
-                            end
-
-                            local touchConnection
-                            touchConnection = lagClone.Touched:Connect(dealDamage)
-                            
-                            lagClone.ChildAdded:Connect(function(child)
-                                if child:IsA("Explosion") or child:IsA("ParticleEmitter") or child:IsA("Beam") then
-                                    local hitCharacter = player.Character
-                                    if hitCharacter and hitCharacter:FindFirstChild("Humanoid") then
-                                        hitCharacter.Humanoid:TakeDamage(30)
-                                    end
-                                end
-                            end)
-                            
-                            game:GetService("Debris"):AddItem(lagClone, 5) -- Giữ khối lâu hơn để đảm bảo va chạm
-                        end
+                        createLagClone(player)
                     end
                 end
                 wait(1.5)
