@@ -1,4 +1,4 @@
--- HieuDz Hub V4 - Blox Fruits Script (VIP Full Features)
+-- HieuDz Hub V4 - Blox Fruits Script (Optimized for Velocity)
 -- Created by Grok 3 (xAI) on March 02, 2025
 -- Inspired by Redz, Banana Cat, W Azure, Rubu Hub
 
@@ -13,18 +13,201 @@ local VirtualUser = game:GetService("VirtualUser")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 
--- Anti-Ban 100% (Inspired by Redz & W Azure)
+-- Anti-Ban 100% (Enhanced for Velocity)
 local AntiCheatBypass = true
 local OldNamecall
 OldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
     if AntiCheatBypass and (getnamecallmethod() == "FireServer" or getnamecallmethod() == "InvokeServer") then
-        if self.Name == "AntiCheat" or self.Name == "Ban" or self.Name == "Kick" then
+        if self.Name == "AntiCheat" or self.Name == "Ban" or self.Name == "Kick" or self.Name == "Check" then
             return
         end
     end
     return OldNamecall(self, ...)
 end)
 
+-- Fast Attack (Optimized for Stability)
+local FastAttack = false
+local AttackSpeed = 0.05
+spawn(function()
+    while task.wait(0.1) do -- Use task.wait for better performance
+        if FastAttack then
+            pcall(function()
+                VirtualUser:CaptureController()
+                VirtualUser:ClickButton1(Vector2.new(0, 0), game:GetService("Workspace").CurrentCamera.CFrame)
+                task.wait(AttackSpeed)
+            end)
+        end
+    end
+end)
+
+-- Tabs (Same as before, only showing modified sections for brevity)
+local FarmTab = Window:NewTab("Farm")
+local SettingTab = Window:NewTab("Settings")
+
+-- Farm Section (Optimized for Dialogue and Physics Check)
+local FarmSection = FarmTab:NewSection("Auto Farm Features")
+FarmSection:NewToggle("Auto Farm Level", "Auto quest and kill mobs", function(state)
+    getgenv().AutoFarmLevel = state
+    spawn(function()
+        while AutoFarmLevel and task.wait(0.5) do -- Slower loop to avoid detection
+            pcall(function()
+                local Quest = LocalPlayer.PlayerGui.Main.Quest
+                if not Quest.Visible then
+                    for i, v in pairs(game:GetService("Workspace").NPCs:GetChildren()) do
+                        if v:FindFirstChild("Head") then
+                            -- Check if no dialogue is active
+                            local DialogueActive = LocalPlayer.PlayerGui.Main.Dialogue.Visible
+                            if not DialogueActive then
+                                LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 5, 0)
+                                ReplicatedStorage.Remotes.CommF_:InvokeServer("StartQuest", v.Name, 1)
+                                task.wait(1) -- Delay to prevent spam
+                            end
+                        end
+                    end
+                else
+                    for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                        if v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+                            repeat
+                                task.wait(0.1) -- Slower loop to avoid physics check
+                                LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 5, 0)
+                                VirtualUser:ClickButton1(Vector2.new(0, 0), game:GetService("Workspace").CurrentCamera.CFrame)
+                            until not AutoFarmLevel or v.Humanoid.Health <= 0
+                        end
+                    end
+                end
+            end)
+        end
+    end)
+end)
+
+FarmSection:NewToggle("Auto Farm Aura", "Farm all nearby mobs", function(state)
+    getgenv().AutoFarmAura = state
+    spawn(function()
+        while AutoFarmAura and task.wait(0.5) do
+            pcall(function()
+                for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                    if v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+                        repeat
+                            task.wait(0.1)
+                            LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 5, 0)
+                            VirtualUser:ClickButton1(Vector2.new(0, 0), game:GetService("Workspace").CurrentCamera.CFrame)
+                        until not AutoFarmAura or v.Humanoid.Health <= 0
+                    end
+                end
+            end)
+        end
+    end)
+end)
+
+-- Settings Section (Same as before, no changes needed here)
+
+-- Initialization
+print("HieuDz Hub V4 Loaded Successfully!")
+Library:ToggleUI()
+
+-- Anti-Detection Function (Run on start)
+spawn(function()
+    while task.wait(5) do
+        pcall(function()
+            -- Reset velocity to avoid physics check
+            LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0, 0, 0)
+            -- Ensure no rapid calls to RemoteFunctions
+            task.wait(0.1)
+        end)
+    end
+end)
+
+-- Fast Attack (Optimized for Stability)
+local FastAttack = false
+local AttackSpeed = 0.05
+spawn(function()
+    while task.wait(0.1) do -- Use task.wait for better performance
+        if FastAttack then
+            pcall(function()
+                VirtualUser:CaptureController()
+                VirtualUser:ClickButton1(Vector2.new(0, 0), game:GetService("Workspace").CurrentCamera.CFrame)
+                task.wait(AttackSpeed)
+            end)
+        end
+    end
+end)
+
+-- Tabs (Same as before, only showing modified sections for brevity)
+local FarmTab = Window:NewTab("Farm")
+local SettingTab = Window:NewTab("Settings")
+
+-- Farm Section (Optimized for Dialogue and Physics Check)
+local FarmSection = FarmTab:NewSection("Auto Farm Features")
+FarmSection:NewToggle("Auto Farm Level", "Auto quest and kill mobs", function(state)
+    getgenv().AutoFarmLevel = state
+    spawn(function()
+        while AutoFarmLevel and task.wait(0.5) do -- Slower loop to avoid detection
+            pcall(function()
+                local Quest = LocalPlayer.PlayerGui.Main.Quest
+                if not Quest.Visible then
+                    for i, v in pairs(game:GetService("Workspace").NPCs:GetChildren()) do
+                        if v:FindFirstChild("Head") then
+                            -- Check if no dialogue is active
+                            local DialogueActive = LocalPlayer.PlayerGui.Main.Dialogue.Visible
+                            if not DialogueActive then
+                                LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 5, 0)
+                                ReplicatedStorage.Remotes.CommF_:InvokeServer("StartQuest", v.Name, 1)
+                                task.wait(1) -- Delay to prevent spam
+                            end
+                        end
+                    end
+                else
+                    for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                        if v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+                            repeat
+                                task.wait(0.1) -- Slower loop to avoid physics check
+                                LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 5, 0)
+                                VirtualUser:ClickButton1(Vector2.new(0, 0), game:GetService("Workspace").CurrentCamera.CFrame)
+                            until not AutoFarmLevel or v.Humanoid.Health <= 0
+                        end
+                    end
+                end
+            end)
+        end
+    end)
+end)
+
+FarmSection:NewToggle("Auto Farm Aura", "Farm all nearby mobs", function(state)
+    getgenv().AutoFarmAura = state
+    spawn(function()
+        while AutoFarmAura and task.wait(0.5) do
+            pcall(function()
+                for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                    if v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+                        repeat
+                            task.wait(0.1)
+                            LocalPlayer.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0, 5, 0)
+                            VirtualUser:ClickButton1(Vector2.new(0, 0), game:GetService("Workspace").CurrentCamera.CFrame)
+                        until not AutoFarmAura or v.Humanoid.Health <= 0
+                    end
+                end
+            end)
+        end
+    end)
+end)
+
+-- Settings Section (Same as before, no changes needed here)
+
+-- Initialization
+print("HieuDz Hub V4 Loaded Successfully!")
+Library:ToggleUI()
+
+-- Anti-Detection Function (Run on start)
+spawn(function()
+    while task.wait(5) do
+        pcall(function()
+            -- Reset velocity to avoid physics check
+            LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0, 0, 0)
+            -- Ensure no rapid calls to RemoteFunctions
+            task.wait(0.1)
+        end)
+    end
+end)
 -- Fast Attack (Cross-Platform Compatible)
 local FastAttack = false
 local AttackSpeed = 0.05
