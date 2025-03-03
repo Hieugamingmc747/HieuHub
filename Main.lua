@@ -1,29 +1,27 @@
--- HieuDz Hub V4 - Blox Fruits Script (Optimized for Velocity & Animation Errors)
+-- HieuDz Hub V4 - Blox Fruits Script (Optimized for UI on Velocity)
 -- Created by Grok 3 (xAI) on March 02, 2025
 -- Inspired by Redz, Banana Cat, W Azure, Rubu Hub
 
-local Library
-pcall(function()
-    Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+local success, Library = pcall(function()
+    return loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
 end)
-if not Library then
-    warn("Failed to load UI Library. Using fallback UI.")
-    -- Fallback UI (Simple Text UI if Kavo fails)
-    local function createSimpleUI()
-        local ScreenGui = Instance.new("ScreenGui")
-        ScreenGui.Parent = game.CoreGui
-        local TextButton = Instance.new("TextButton")
-        TextButton.Size = UDim2.new(0, 100, 0, 50)
-        TextButton.Position = UDim2.new(0.5, -50, 0.1, 0)
-        TextButton.Text = "Toggle Menu"
-        TextButton.Parent = ScreenGui
-        TextButton.MouseButton1Click:Connect(function()
-            print("Menu Toggled!")
-        end)
-    end
-    createSimpleUI()
+
+local Window
+if success and Library then
+    Window = Library.CreateLib("HieuDz Hub V4 - Blox Fruits", "DarkTheme")
 else
-    local Window = Library.CreateLib("HieuDz Hub V4 - Blox Fruits", "DarkTheme")
+    warn("Failed to load Kavo UI Library. Using fallback UI.")
+    -- Fallback UI (Simple Text Button)
+    local ScreenGui = Instance.new("ScreenGui")
+    ScreenGui.Parent = game.CoreGui
+    local TextButton = Instance.new("TextButton")
+    TextButton.Size = UDim2.new(0, 100, 0, 50)
+    TextButton.Position = UDim2.new(0.5, -50, 0.1, 0)
+    TextButton.Text = "Toggle Menu (Fallback)"
+    TextButton.Parent = ScreenGui
+    TextButton.MouseButton1Click:Connect(function()
+        print("Fallback UI Toggled! (No advanced features)")
+    end)
 end
 
 -- Services
@@ -61,13 +59,14 @@ spawn(function()
     end
 end)
 
--- Tabs (Only showing key sections for brevity)
-local FarmTab = Window and Window:NewTab("Farm")
-local SettingTab = Window and Window:NewTab("Settings")
+-- Tabs (Only create if Window exists)
+local FarmTab, SettingTab
+if Window then
+    FarmTab = Window:NewTab("Farm")
+    SettingTab = Window:NewTab("Settings")
 
--- Farm Section (Optimized for Dialogue and Physics Check)
-local FarmSection = FarmTab and FarmTab:NewSection("Auto Farm Features")
-if FarmSection then
+    -- Farm Section
+    local FarmSection = FarmTab:NewSection("Auto Farm Features")
     FarmSection:NewToggle("Auto Farm Level", "Auto quest and kill mobs", function(state)
         getgenv().AutoFarmLevel = state
         spawn(function()
@@ -100,12 +99,21 @@ if FarmSection then
             end
         end)
     end)
+
+    -- Setting Section (Simplified for brevity)
+    local SettingSection = SettingTab:NewSection("Advanced Settings")
+    SettingSection:NewToggle("Fast Attack", "Toggle Fast Attack", function(state)
+        FastAttack = state
+    end)
 end
 
--- Initialization
-print("HieuDz Hub V4 Loaded Successfully!")
-if Window then
-    Library:ToggleUI()
+-- Initialization (Prevent multiple prints)
+if not getgenv().HieuDzHubLoaded then
+    getgenv().HieuDzHubLoaded = true
+    print("HieuDz Hub V4 Loaded Successfully!")
+    if Window then
+        Library:ToggleUI()
+    end
 end
 
 -- Anti-Detection Function
