@@ -19,10 +19,10 @@ getgenv().Settings = {
     BallPredicToggle = nil,
     AutoFarmTweenToggle = nil,
     AutoFarmTeleportToggle = nil,
-    InfiniteStamina = nil,
-    -- WhiteScreen = nil,
+    InfiniteStamina = false,
+    WhiteScreen = nil,
     AutoGoalKeeper = nil,
-    AutoGKKeybind = nil,
+    AutoGKKeybind = "",
     TeamPositionDropdown = nil,
     AutoTeamToggle = nil,
     AutoTeamForAutoFarmToggle = nil,
@@ -43,7 +43,7 @@ getgenv().Settings = {
     EffectsDropdown = nil,
     CosmeticsDropdown = nil,
     CardsDropdown = nil,
-
+    LagSwitchToggle = nil,
 }
 
 local function CreateToggle()
@@ -72,7 +72,7 @@ local function CreateToggle()
 
     local toggleButton = Instance.new("ImageButton")
     toggleButton.Name = "ToggleButton"
-    toggleButton.Image = "rbxassetid://79719261171890"
+    toggleButton.Image = "rbxassetid://112196145837803"
     toggleButton.ImageTransparency = 0.3
     toggleButton.AnchorPoint = Vector2.new(0.5, 0.5)
     toggleButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -109,14 +109,18 @@ function checkDevice()
             local FeariseToggle = CreateToggle()
             FeariseToggle.MouseButton1Click:Connect(function()
                 for _, guiObject in ipairs(game:GetService("CoreGui"):GetChildren()) do
-                    if guiObject.Name == "FeariseHub" and guiObject:IsA("ScreenGui") then
-                        guiObject.Enabled = not guiObject.Enabled
+                    if guiObject.Name == "zEEHub" and guiObject:IsA("ScreenGui") then
+                        for FrameIndex, FrameValue in pairs(guiObject:GetChildren()) do
+                            if FrameValue:IsA("Frame") and FrameValue:FindFirstChild("CanvasGroup") then
+                                FrameValue.Visible = not FrameValue.Visible
+                            end
+                        end
                     end
                 end
             end)
             game:GetService("CoreGui").ChildRemoved:Connect(function(Value)
-                if Value.Name == "HieuDz Hub" then
-                    FeariseToggle.Parent.Parent:Destroy()
+                if Value.Name == "zEE Hub" then
+                    zEEToggle.Parent.Parent:Destroy()
                 end
             end)
             Device = UDim2.fromOffset(480, 360)
@@ -127,18 +131,51 @@ function checkDevice()
 end
 checkDevice()
 
-local Fluent = loadstring(game:HttpGet("https://raw.githubusercontent.com/Malemz1/FORTUNE-HUB/refs/heads/main/FeariseHub_UI.lua"))()
+local FileName = tostring(game.Players.LocalPlayer.UserId).."_Settings.json"
+local BaseFolder = "zEE Hub"
+local SubFolder = "BlueLockRivals"
+
+function SaveSetting() 
+    local json
+    local HttpService = game:GetService("HttpService")
+    
+    if writefile then
+        json = HttpService:JSONEncode(getgenv().Settings)
+
+        if not isfolder(BaseFolder) then
+            makefolder(BaseFolder)
+        end
+        if not isfolder(BaseFolder.."/"..SubFolder) then
+            makefolder(BaseFolder.."/"..SubFolder)
+        end
+        
+        writefile(BaseFolder.."/"..SubFolder.."/"..FileName, json)
+    else
+        error("ERROR: Can't save your settings")
+    end
+end
+
+function LoadSetting()
+    local HttpService = game:GetService("HttpService")
+    if readfile and isfile and isfile(BaseFolder.."/"..SubFolder.."/"..FileName) then
+        getgenv().Settings = HttpService:JSONDecode(readfile(BaseFolder.."/"..SubFolder.."/"..FileName))
+    end
+end
+
+LoadSetting()
+
+local Fluent = loadstring(game:HttpGet("https://raw.githubusercontent.com/imyourlio/Cracked/refs/heads/main/Fearise%20UI"))()
 local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
 local Window = Fluent:CreateWindow({
-    Title = "HieuDz BlueLock Hub" .. " | ".."BlueLock : Rival".." | ".."[Version 3]",
-    SubTitle = "By HieuDz",
+    Title = "HieuDz Hub" .. " | ".."BlueLock : Rival".." | ".."[Version 3]",
+    SubTitle = "by HieuDz",
     TabWidth = 160,
     Size =  Device, --UDim2.fromOffset(480, 360), --default size (580, 460)
-    Acrylic = false, -- การเบลออาจตรวจจับได้ การตั้งค่านี้เป็น false จะปิดการเบลอทั้งหมด
+    Acrylic = false, -- à¸à¸²à¸£à¹€à¸šà¸¥à¸­à¸­à¸²à¸ˆà¸•à¸£à¸§à¸ˆà¸ˆà¸±à¸šà¹„à¸”à¹‰ à¸à¸²à¸£à¸•à¸±à¹‰à¸‡à¸„à¹ˆà¸²à¸™à¸µà¹‰à¹€à¸›à¹‡à¸™ false à¸ˆà¸°à¸›à¸´à¸”à¸à¸²à¸£à¹€à¸šà¸¥à¸­à¸—à¸±à¹‰à¸‡à¸«à¸¡à¸”
     Theme = "Rose", --Amethyst
-    MinimizeKey = Enum.KeyCode.RightControl
+    MinimizeKey = Enum.KeyCode.LeftControl --RightControl
 })
 
 local Tabs = {
@@ -147,8 +184,10 @@ local Tabs = {
     pageVisual = Window:AddTab({ Title = "Visual", Icon = "view" }),
     pageKaitan = Window:AddTab({ Title = "Kaitan", Icon = "crown" }),
     pageOP = Window:AddTab({ Title = "OP", Icon = "apple" }),
+    pageRage = Window:AddTab({ Title = "Rage", Icon = "bug" }),
     pageSpin = Window:AddTab({ Title = "Spin", Icon = "box" }),
     pageItem = Window:AddTab({ Title = "Item", Icon = "archive" }),
+    pageSettings = Window:AddTab({ Title = "Settings", Icon = "settings" }),
 }
 
 do
@@ -162,10 +201,12 @@ do
         Finished = false,
         Callback = function(Value)
             getgenv().Settings.WalkSpeedInput = Value
+            SaveSetting()
         end
     })
     WalkSpeedInput:OnChanged(function(Value)
         getgenv().Settings.WalkSpeedInput = Value
+        SaveSetting()
     end)
     local JumpPowerToggle = Tabs.pageLegit:AddToggle("JumpPowerToggle", {Title = "Toggle JumpPower", Default = getgenv().Settings.JumpPowerToggle or false })
     local JumpPowerInput = Tabs.pageLegit:AddInput("JumpPowerInput", {
@@ -175,10 +216,12 @@ do
         Finished = false,
         Callback = function(Value)
             getgenv().Settings.JumpPowerInput = Value
+            SaveSetting()
         end
     })
     JumpPowerInput:OnChanged(function(Value)
         getgenv().Settings.JumpPowerInput = Value
+        SaveSetting()
     end)
     local HitboxTitle = Tabs.pageLegit:AddSection("Hitbox")
     local HitboxToggle = Tabs.pageLegit:AddToggle("HitboxToggle", { Title = "Hitbox", Default = getgenv().Settings.HitboxToggle or false })
@@ -190,15 +233,17 @@ do
         Finished = false,
         Callback = function(Value)
             getgenv().Settings.HitboxInput = Value
+            SaveSetting()
         end
     })
     HitboxInput:OnChanged(function(Value)
         getgenv().Settings.HitboxInput = Value
+        SaveSetting()
     end)
     local HitboxKeybind = Tabs.pageLegit:AddKeybind("HitboxKeybind", {
         Title = "Toggle Hitbox Keybind",
         Mode = "Toggle",
-        Default = getgenv().Settings.HitboxKeybind or "",
+        Default = "",
         Callback = function(Value)
             getgenv().Settings.HitboxKeybind = Value
         end,
@@ -206,25 +251,55 @@ do
             getgenv().Settings.HitboxKeybind = NewKey
         end
     })
-    HitboxKeybind:OnChanged(function(Value)
-        getgenv().Settings.HitboxKeybind = Value
-    end)
     local MiscTitle = Tabs.pageLegit:AddSection("Misc")
     local AutoDribble = Tabs.pageLegit:AddToggle("AutoDribble", {Title = "AutoDribble", Description = "Testing.", Default = getgenv().Settings.AutoDribble or false })
     local vipToggle = Tabs.pageLegit:AddToggle("vipToggle", {Title = "vipToggle", Description = "Testing.", Default = getgenv().Settings.vipToggle or false })
-    local InfiniteStamina = Tabs.pageLegit:AddToggle("InfiniteStamina", {Title = "InfiniteStamina", Description = "Testing.", Default = getgenv().Settings.InfiniteStamina or false })
-    -- local InfiniteStaminaButton Tabs.pageLegit:AddButton({
-    --     Title = "Infinite Stamina",
-    --     Description = "Click to enable Infinite Stamina (cannot be disabled)",
-    --     Callback = function()
-            
-    --     end
-    -- })
+    local InfiniteStaminaButton Tabs.pageLegit:AddButton({
+        Title = "Infinite Stamina",
+        Description = "Click to enable Infinite Stamina (cannot be disabled)",
+        Callback = function()
+            if not getgenv().Settings.InfiniteStamina then
+                getgenv().Settings.InfiniteStamina = true
+                SaveSetting()
+                Fluent:Notify({
+                    Title = "Infinite Stamina",
+                    Content = "Enabled",
+                    Duration = 3
+                })
+            else
+                Fluent:Notify({
+                    Title = "Infinite Stamina",
+                    Content = "Already Enabled",
+                    Duration = 3
+                })
+            end
+        end
+    })
+    task.spawn(function()
+        while task.wait(0.1) do
+            if getgenv().Settings.InfiniteStamina then
+                pcall(function()
+                    local plr = game.Players.LocalPlayer
+                    local stats = plr:FindFirstChild("PlayerStats")
+                    if stats then
+                        local stamina = stats:FindFirstChild("Stamina")
+                        if stamina then
+                            stamina:Destroy()
+                            local fakeStamina = Instance.new("NumberValue")
+                            fakeStamina.Name = "Stamina"
+                            fakeStamina.Value = math.huge
+                            fakeStamina.Parent = stats
+                        end
+                    end
+                end)
+            end
+        end
+    end)
     local EnchantedTitle = Tabs.pageLegit:AddSection("Enchanted")
     local InstantKickKeybind = Tabs.pageLegit:AddKeybind("InstantKickKeybind", {
         Title = "Shoot Keybind",
         Mode = "Toggle",
-        Default = getgenv().Settings.InstantKickKeybind or "",
+        Default = "",
         Callback = function(Value)
             getgenv().Settings.InstantKickKeybind = Value
         end,
@@ -232,21 +307,20 @@ do
             getgenv().Settings.InstantKickKeybind = Value
         end
     })
-    InstantKickKeybind:OnChanged(function(Value)
-        getgenv().Settings.InstantKickKeybind = Value
-    end)
     local InputPower = Tabs.pageLegit:AddInput("InputPower", {
         Title = "Adjust Power (1-100000)",
-        Default = getgenv().Settings.InputPower or 500,
+        Default = getgenv().Settings.InputPower or "500",
         Placeholder = "Enter power...",
         Numeric = true,
         Finished = false,
         Callback = function(Value)
-            getgenv().Settings.InputPower = Value
+            getgenv().Settings.InputPower = tonumber(Value)
+            SaveSetting()
         end
     })
     InputPower:OnChanged(function(Value)
-        getgenv().Settings.InputPower = Value
+        getgenv().Settings.InputPower = tonumber(Value)
+        SaveSetting()
     end)
 
     -------------------------------------------------------[[ VISUAL ]]-------------------------------------------------------
@@ -261,13 +335,13 @@ do
     local Striker = Tabs.pageKaitan:AddSection("Striker")
     local AutoFarmTweenToggle = Tabs.pageKaitan:AddToggle("AutoFarmTweenToggle", { Title = "Auto Farm(Tween)", Default = getgenv().Settings.AutoFarmTweenToggle or false })
     local AutoFarmTeleportToggle = Tabs.pageKaitan:AddToggle("AutoFarmTeleportToggle", { Title = "Auto Farm(TP)", Default = getgenv().Settings.AutoFarmTeleportToggle or false })
-    -- local WhiteScreen = Tabs.pageKaitan:AddToggle("WhiteScreen", { Title = "WhiteScreen [GPU 0%]", Default = getgenv().Settings.WhiteScreen or false })
+    local WhiteScreen = Tabs.pageKaitan:AddToggle("WhiteScreen", { Title = "WhiteScreen [GPU 0%]", Default = getgenv().Settings.WhiteScreen or false })
     local GoalTitle = Tabs.pageKaitan:AddSection("Goal (In Testing)")
     local AutoGoalKeeper = Tabs.pageKaitan:AddToggle("WhitAutoGoalKeepereScreen", { Title = "Auto GK", Default = getgenv().Settings.AutoGoalKeeper or false })
     local AutoGKKeybind = Tabs.pageKaitan:AddKeybind("AutoGKKeybind", {
         Title = "Auto GK Keybind",
         Mode = "Toggle",
-        Default = getgenv().Settings.AutoGKKeybind or "",
+        Default = "",
         Callback = function(Value)
             getgenv().Settings.AutoGKKeybind = Value
         end,
@@ -275,9 +349,10 @@ do
             getgenv().Settings.AutoGKKeybind = Value
         end
     })
-    AutoGKKeybind:OnChanged(function(Value)
-        getgenv().Settings.AutoGKKeybind = Value
-    end)
+    -- AutoGKKeybind:OnChanged(function(Value)
+    --     getgenv().Settings.AutoGKKeybind = Value
+    --     SaveSetting()
+    -- end)
     local Properties = Tabs.pageKaitan:AddSection("Properties")
     local TeamPositionDropdown = Tabs.pageKaitan:AddDropdown("TeamPositionDropdown", {
         Title = "Team and Position",
@@ -290,10 +365,12 @@ do
         Default = getgenv().Settings.TeamPositionDropdown or "Home_CF",
         Callback = function(Value)
             getgenv().Settings.TeamPositionDropdown = Value
+            SaveSetting()
         end
     })
     TeamPositionDropdown:OnChanged(function(Value)
         getgenv().Settings.TeamPositionDropdown = Value
+        SaveSetting()
     end)
     local AutoTeamToggle = Tabs.pageKaitan:AddToggle("AutoTeamToggle", { Title = "Auto Team & Position", Default = getgenv().Settings.AutoTeamToggle or false })
     local AutoTeamForAutoFarmToggle = Tabs.pageKaitan:AddToggle("AutoTeamForAutoFarmToggle", { Title = "Auto Team & Position (For Auto Farm)", Default = getgenv().Settings.AutoTeamForAutoFarmToggle or false })
@@ -301,18 +378,20 @@ do
     local HopTitle = Tabs.pageKaitan:AddSection("Hop Server")
     local AutoHopToggle = Tabs.pageKaitan:AddToggle("AutoHopToggle", { Title = "Auto Hop", Default = getgenv().Settings.AutoHopToggle or false })
     local AutoHopThresholdInput = Tabs.pageKaitan:AddInput("AutoHopThresholdInput", {
-        Title = "Auto Hop When Players ≤",
-        Description = "ย้ายเซิฟหากผู้เล่นน้อยกว่า",
+        Title = "Auto Hop When Players â‰¤",
+        Description = "à¸¢à¹‰à¸²à¸¢à¹€à¸‹à¸´à¸Ÿà¸«à¸²à¸à¸œà¸¹à¹‰à¹€à¸¥à¹ˆà¸™à¸™à¹‰à¸­à¸¢à¸à¸§à¹ˆà¸²",
         Default = getgenv().Settings.AutoHopThresholdInput or 4,
         Placeholder = "Enter Number Of Players",
         Numeric = true,
         Finished = false,
         Callback = function(v)
             getgenv().Settings.AutoHopThresholdInput = tonumber(v)
+            SaveSetting()
         end
     })
     AutoHopThresholdInput:OnChanged(function(v)
         getgenv().Settings.AutoHopThresholdInput = tonumber(v)
+        SaveSetting()
     end)
 
     -------------------------------------------------------[[ OP ]]-------------------------------------------------------
@@ -320,7 +399,7 @@ do
     local KaiserKeybide = Tabs.pageOP:AddKeybind("KaiserKeybide", {
         Title = "Toggle Kaiser Impack Keybind",
         Mode = "Toggle",
-        Default = getgenv().Settings.KaiserKeybide or "",
+        Default = "",
         Callback = function(Value)
             getgenv().Settings.KaiserKeybide = Value
         end,
@@ -328,14 +407,11 @@ do
             getgenv().Settings.KaiserKeybide = Value
         end
     })
-    KaiserKeybide:OnChanged(function(Value)
-        getgenv().Settings.KaiserKeybide = Value
-    end)
     local CurveShotProMaxToggle = Tabs.pageOP:AddToggle("CurveShotProMaxToggle", { Title = "Gyro Shot Pro Max", Default = getgenv().Settings.CurveShotProMaxToggle or false })
     local CurveShotProMaxKeybind = Tabs.pageOP:AddKeybind("CurveShotProMaxKeybind", {
         Title = "Toggle Gyro Shot Keybind",
         Mode = "Toggle",
-        Default = getgenv().Settings.CurveShotProMaxKeybind or "",
+        Default = "",
         Callback = function(Value)
             getgenv().Settings.CurveShotProMaxKeybind = Value
         end,
@@ -343,20 +419,20 @@ do
             getgenv().Settings.CurveShotProMaxKeybind = Value
         end
     })
-    CurveShotProMaxKeybind:OnChanged(function(Value)
-        getgenv().Settings.CurveShotProMaxKeybind = Value
-    end)
     local SkillTitle = Tabs.pageOP:AddSection("No CD Skill (Wave Required)")
     local NoCooldownStealToggle = Tabs.pageOP:AddToggle("NoCooldownStealToggle", { Title = "No Cooldown - Steal", Default = getgenv().Settings.NoCooldownStealToggle or false })
     local NoCooldownAirDribbleToggle = Tabs.pageOP:AddToggle("NoCooldownAirDribbleToggle", { Title = "No Cooldown - AirDribble", Default = getgenv().Settings.NoCooldownAirDribbleToggle or false })
     local NoCooldownAirDashToggle = Tabs.pageOP:AddToggle("NoCooldownAirDashToggle", { Title = "No Cooldown - AirDash", Default = getgenv().Settings.NoCooldownAirDashToggle or false })
+
+    -------------------------------------------------------[[ RAGE ]]-------------------------------------------------------
+    local LagSwitchToggle = Tabs.pageRage:AddToggle("LagSwitchToggle", {Title = "Lag Switch", Default = getgenv().Settings.LagSwitchToggle or false })
 
     -------------------------------------------------------[[ SPIN ]]-------------------------------------------------------
     local StyleTitle = Tabs.pageSpin:AddSection("Style Spin")
     local StyleLockDropdown = Tabs.pageSpin:AddDropdown("StyleLockDropdown", {
         Title = "Style Lock",
         Description = "Select styles to stop spinning.",
-        Values = {"Isagi", "Chigiri", "Bachira", "Otoya", "Hiori", "Gagamaru", "King", "Nagi", "Reo",  "Karasu", "Shidou", "Kunigami", "Sae", "Aiku", "Rin", "Yukimiya"}, -- Replace with actual style names
+        Values = {"Isagi", "Chigiri", "Bachira", "Otoya", "Hiori", "Gagamaru", "King", "Nagi", "Reo",  "Karasu", "Shidou", "Kunigami", "Sae", "Aiku", "Rin", "Yukimiya", "Don Lorenzo"}, -- Replace with actual style names
         Multi = true,
         Default = {}
     })
@@ -366,6 +442,7 @@ do
             table.insert(Values, Value)
         end
         getgenv().Settings.StyleLockDropdown = Values
+        SaveSetting()
     end)
     local AutoSpinToggle = Tabs.pageSpin:AddToggle("AutoSpinToggle", { Title = "Auto Style Spin", Default = getgenv().Settings.AutoSpinToggle or false })
     local FlowTitle = Tabs.pageSpin:AddSection("Flow Spin")
@@ -382,6 +459,7 @@ do
             table.insert(Values, Value)
         end
         getgenv().Settings.FlowLockDropdown = Values
+        SaveSetting()
     end)
     local AutoFlowToggle = Tabs.pageSpin:AddToggle("AutoFlowToggle", { Title = "Auto Flow Spin", Default = getgenv().Settings.AutoFlowToggle or false })
 
@@ -412,10 +490,12 @@ do
         Default = getgenv().Settings.EffectsDropdown or "",
         Callback = function(Value)
             getgenv().Settings.EffectsDropdown = Value
+            SaveSetting()
         end
     })
     EffectsDropdown:OnChanged(function(Value)
         getgenv().Settings.EffectsDropdown = Value
+        SaveSetting()
     end)
     local ApplyEffectButton = Tabs.pageItem:AddButton({
         Title = "Apply Effect",
@@ -423,13 +503,13 @@ do
             if getgenv().Settings.EffectsDropdown ~= "" then
                 game:GetService("ReplicatedStorage").Packages.Knit.Services.CustomizationService.RE.Customize:FireServer("GoalEffects", getgenv().Settings.EffectsDropdown)
                 Fluent:Notify({
-                    Title = "Fearise Hub",
+                    Title = "zEE Hub",
                     Content = "Your Wear Goal Effect "..tostring(getgenv().Settings.EffectsDropdown),
                     Duration = 5
                 })
             else
                 Fluent:Notify({
-                    Title = "Fearise Hub",
+                    Title = "zEE Hub",
                     Content = "Please Select Goal Effect Before Use.",
                     Duration = 3
                 })
@@ -444,10 +524,12 @@ do
         Default = getgenv().Settings.CosmeticsDropdown or "",
         Callback = function(Value)
             getgenv().Settings.CosmeticsDropdown = Value
+            SaveSetting()
         end
     })
     CosmeticsDropdown:OnChanged(function(Value)
         getgenv().Settings.CosmeticsDropdown = Value
+        SaveSetting()
     end)
     local ApplyCosmetic = Tabs.pageItem:AddButton({
         Title = "Apply Cosmetic",
@@ -455,13 +537,13 @@ do
             if getgenv().Settings.CosmeticsDropdown ~= "" then
                 game:GetService("ReplicatedStorage").Packages.Knit.Services.CustomizationService.RE.Customize:FireServer("Cosmetics", getgenv().Settings.CosmeticsDropdown)
                 Fluent:Notify({
-                    Title = "Fearise Hub",
+                    Title = "zEE Hub",
                     Content = "Your Wear Cosmetic "..tostring(getgenv().Settings.CosmeticsDropdown),
                     Duration = 5
                 })
             else
                 Fluent:Notify({
-                    Title = "Fearise Hub",
+                    Title = "zEE Hub",
                     Content = "Please Select Cosmetic Before Use.",
                     Duration = 3
                 })
@@ -476,10 +558,12 @@ do
         Default = getgenv().Settings.CardsDropdown or "",
         Callback = function(Value)
             getgenv().Settings.CardsDropdown = Value
+            SaveSetting()
         end
     })
     CardsDropdown:OnChanged(function(Value)
         getgenv().Settings.CardsDropdown = Value
+        SaveSetting()
     end)
     local ApplyCard = Tabs.pageItem:AddButton({
         Title = "Apply Card",
@@ -487,13 +571,13 @@ do
             if getgenv().Settings.CardsDropdown ~= "" then
                 game:GetService("ReplicatedStorage").Packages.Knit.Services.CustomizationService.RE.Customize:FireServer("Cards", getgenv().Settings.CardsDropdown)
                 Fluent:Notify({
-                    Title = "Fearise Hub",
+                    Title = "zEE Hub",
                     Content = "Your Wear Card "..tostring(getgenv().Settings.CardsDropdown),
                     Duration = 5
                 })
             else
                 Fluent:Notify({
-                    Title = "Fearise Hub",
+                    Title = "zEE Hub",
                     Content = "Please Select Card Before Use.",
                     Duration = 3
                 })
@@ -540,12 +624,6 @@ do
             },
             triggerQ = {
                 Distance
-            },
-            shootBall = {
-                Args = {
-                    [1] = tonumber(getgenv().Settings.InputPower),
-                    [4] = mouse
-                }
             },
             createBillboard = {
                 BillboardGui
@@ -618,8 +696,8 @@ do
             MAX_TIME = 3,
             VELOCITY_THRESHOLD = 1,
             MOVEMENT_THRESHOLD = 1,
-            rayPart, -- เส้นที่แสดงวิถีลูกบอล
-            tween -- Tween ปัจจุบัน
+            rayPart, -- à¹€à¸ªà¹‰à¸™à¸—à¸µà¹ˆà¹à¸ªà¸”à¸‡à¸§à¸´à¸–à¸µà¸¥à¸¹à¸à¸šà¸­à¸¥
+            tween -- Tween à¸›à¸±à¸ˆà¸ˆà¸¸à¸šà¸±à¸™
             
         },
         AutoGKKeybind = {
@@ -639,14 +717,13 @@ do
             State
         },
         NoCooldownStealToggle = {
-            originalSteal = require(game:GetService("ReplicatedStorage").Controllers.AbilityController.Abilities.Bachira.Steal),
             newSteal
         },
         NoCooldownAirDribbleToggle = {
-            airdribbleModule = require(game:GetService("ReplicatedStorage").Controllers.AbilityController.Abilities.Nagi.AirDribble)
+            --airdribbleModule = require(game:GetService("ReplicatedStorage").Controllers.AbilityController.Abilities.Nagi.AirDribble)
         },
         NoCooldownAirDashToggle = {
-            originalAirDash = require(game:GetService("ReplicatedStorage").Controllers.AbilityController.Abilities.Nagi.AirDash)
+            --originalAirDash = require(game:GetService("ReplicatedStorage").Controllers.AbilityController.Abilities.Nagi.AirDash)
         }
     }
 
@@ -709,7 +786,11 @@ do
         return false
     end
     Function_Storage.shootBall = function()
-        Remotes.Shoot:FireServer(unpack(Debris_Variables.Function_Variables.shootBall.Args))
+        local args = {
+            [1] = getgenv().Settings.InputPower,
+            [4] = mouse.Hit.Position
+        }
+        game:GetService("ReplicatedStorage").Packages.Knit.Services.BallService.RE.Shoot:FireServer(unpack(args))        
     end
     Function_Storage.createESP = function(plr)
         if plr == player then return end
@@ -831,7 +912,7 @@ do
                     if d.id ~= p and d.playing < d.maxPlayers then
                         game:GetService("Players").LocalPlayer.OnTeleport:Connect(function(state)
                             if state == Enum.TeleportState.Started then
-                                queue_on_teleport([[loadstring(game:HttpGet(""))()]]) -- ใส่ลิงก์โหลดสคริปต์ใหม่
+                                queue_on_teleport([[loadstring(game:HttpGet(""))()]]) -- à¹ƒà¸ªà¹ˆà¸¥à¸´à¸‡à¸à¹Œà¹‚à¸«à¸¥à¸”à¸ªà¸„à¸£à¸´à¸›à¸•à¹Œà¹ƒà¸«à¸¡à¹ˆ
                             end
                         end)
                         s:TeleportToPlaceInstance(sId, d.id, game:GetService("Players").LocalPlayer)
@@ -850,7 +931,6 @@ do
             return goalCFrames.Home[math.random(1, #goalCFrames.Home)]
         end
     end
-    
     Function_Storage.KaiserShoot = function(ball, startPos, targetCF, height, duration, curveIntensity)
         local startTime = tick()
         local connection
@@ -871,7 +951,6 @@ do
             ball.CFrame = CFrame.new(currentXZ.X + curve, startPos.Y + arcHeight, currentXZ.Z)
         end)
     end
-    
     Function_Storage.CurveShoot = function(ball, startPos, targetCF, height, duration, curveIntensity)
         local startTime = tick()
         local connection
@@ -890,29 +969,27 @@ do
             local t = elapsed / duration
             local lerpPos = startPos:Lerp(endPos, t)
     
-            -- ใช้ sin และ cos เพื่อทำให้วิถีการเคลื่อนที่เป็นวงกลม (เส้นวงแหวน)
-            local angle = t * math.pi * 2 * curveIntensity -- ควบคุมความเร็วการหมุน
-            local radius = 10 -- กำหนดรัศมีของวงแหวน
+            -- à¹ƒà¸Šà¹‰ sin à¹à¸¥à¸° cos à¹€à¸žà¸·à¹ˆà¸­à¸—à¸³à¹ƒà¸«à¹‰à¸§à¸´à¸–à¸µà¸à¸²à¸£à¹€à¸„à¸¥à¸·à¹ˆà¸­à¸™à¸—à¸µà¹ˆà¹€à¸›à¹‡à¸™à¸§à¸‡à¸à¸¥à¸¡ (à¹€à¸ªà¹‰à¸™à¸§à¸‡à¹à¸«à¸§à¸™)
+            local angle = t * math.pi * 2 * curveIntensity -- à¸„à¸§à¸šà¸„à¸¸à¸¡à¸„à¸§à¸²à¸¡à¹€à¸£à¹‡à¸§à¸à¸²à¸£à¸«à¸¡à¸¸à¸™
+            local radius = 10 -- à¸à¸³à¸«à¸™à¸”à¸£à¸±à¸¨à¸¡à¸µà¸‚à¸­à¸‡à¸§à¸‡à¹à¸«à¸§à¸™
             
             local horizontalOffset = math.cos(angle) * radius
             local verticalOffset = math.sin(angle) * radius
     
-            -- เพิ่มความสูงให้ลูกลอยขึ้นไปก่อนตกลงมาแบบโค้ง
+            -- à¹€à¸žà¸´à¹ˆà¸¡à¸„à¸§à¸²à¸¡à¸ªà¸¹à¸‡à¹ƒà¸«à¹‰à¸¥à¸¹à¸à¸¥à¸­à¸¢à¸‚à¸¶à¹‰à¸™à¹„à¸›à¸à¹ˆà¸­à¸™à¸•à¸à¸¥à¸‡à¸¡à¸²à¹à¸šà¸šà¹‚à¸„à¹‰à¸‡
             local arcHeight = math.sin(t * math.pi) * height
     
-            -- หมุนรอบตัวเอง
-            local spinEffect = math.rad(t * 360 * 4) -- หมุนเร็วขึ้น
+            -- à¸«à¸¡à¸¸à¸™à¸£à¸­à¸šà¸•à¸±à¸§à¹€à¸­à¸‡
+            local spinEffect = math.rad(t * 360 * 4) -- à¸«à¸¡à¸¸à¸™à¹€à¸£à¹‡à¸§à¸‚à¸¶à¹‰à¸™
     
-            -- ปรับตำแหน่งลูกบอลให้เคลื่อนที่เป็นวงแหวน
+            -- à¸›à¸£à¸±à¸šà¸•à¸³à¹à¸«à¸™à¹ˆà¸‡à¸¥à¸¹à¸à¸šà¸­à¸¥à¹ƒà¸«à¹‰à¹€à¸„à¸¥à¸·à¹ˆà¸­à¸™à¸—à¸µà¹ˆà¹€à¸›à¹‡à¸™à¸§à¸‡à¹à¸«à¸§à¸™
             ball.CFrame = CFrame.new(
-                lerpPos.X + horizontalOffset,  -- หมุนซ้ายขวาเป็นวงกลม
-                startPos.Y + arcHeight + verticalOffset, -- ให้วิถีอยู่ในแนวโค้ง
+                lerpPos.X + horizontalOffset,  -- à¸«à¸¡à¸¸à¸™à¸‹à¹‰à¸²à¸¢à¸‚à¸§à¸²à¹€à¸›à¹‡à¸™à¸§à¸‡à¸à¸¥à¸¡
+                startPos.Y + arcHeight + verticalOffset, -- à¹ƒà¸«à¹‰à¸§à¸´à¸–à¸µà¸­à¸¢à¸¹à¹ˆà¹ƒà¸™à¹à¸™à¸§à¹‚à¸„à¹‰à¸‡
                 lerpPos.Z
-            ) * CFrame.Angles(0, spinEffect, 0) -- หมุนรอบตัวเอง
+            ) * CFrame.Angles(0, spinEffect, 0) -- à¸«à¸¡à¸¸à¸™à¸£à¸­à¸šà¸•à¸±à¸§à¹€à¸­à¸‡
         end)
     end
-    
-
     Function_Storage.teleportBallToGoalKaiser = function()
         local ball = Function_Storage.GetBall()
         if ball and ball.Position then
@@ -929,7 +1006,6 @@ do
             warn("Failed to retrieve ball object")
         end
     end
-
     Function_Storage.teleportBallToGoalCurve = function()
         local ball = Function_Storage.GetBall()
         if ball and ball.Position then
@@ -946,10 +1022,9 @@ do
             warn("Failed to retrieve ball object")
         end
     end
-
     Function_Storage.CreateFeariseHubMobileToggle = function()
         local feariseHubMobile = Instance.new("ScreenGui")
-        feariseHubMobile.Name = "FeariseHubMobile"
+		feariseHubMobile.Name = "zEEHubMobile"
         feariseHubMobile.IgnoreGuiInset = true
         feariseHubMobile.ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets
         feariseHubMobile.ResetOnSpawn = false
@@ -1259,6 +1334,8 @@ do
     
     WalkSpeedToggle:OnChanged(function()
         task.spawn(function()
+            getgenv().Settings.WalkSpeedToggle = WalkSpeedToggle.Value
+            SaveSetting()
             if WalkSpeedToggle.Value then
                 Debris_Variables.WalkSpeedToggle.WalkSpeedConnect = humanoid:GetPropertyChangedSignal("WalkSpeed"):Connect(function()
                     if humanoid.WalkSpeed ~= getgenv().Settings.WalkSpeedInput then
@@ -1289,6 +1366,8 @@ do
     end)
     JumpPowerToggle:OnChanged(function()
         task.spawn(function()
+            getgenv().Settings.JumpPowerToggle = JumpPowerToggle.Value
+            SaveSetting()
             while JumpPowerToggle.Value do
                 task.wait()
                 humanoid.UseJumpPower = true
@@ -1302,32 +1381,37 @@ do
     end)
     HitboxToggle:OnChanged(function()
         task.spawn(function()
+            getgenv().Settings.HitboxToggle = HitboxToggle.Value
+            SaveSetting()
             while HitboxToggle.Value do
                 task.wait()
                 Debris_Variables.HitboxToggle.FootBall = Function_Storage.GetBall()
                 Debris_Variables.HitboxToggle.HitBox = Debris_Variables.HitboxToggle.FootBall:FindFirstChild("Hitbox")
                 Debris_Variables.HitboxToggle.Char = Debris_Variables.HitboxToggle.FootBall:FindFirstChild("Char")
-                if Debris_Variables.HitboxToggle.FootBall and Debris_Variables.HitboxToggle.FootBall.Parent == Services.Workspace then
-                    if Debris_Variables.HitboxToggle.Char.Value ~= character then
-                        if Debris_Variables.HitboxToggle.HitBox:IsA("Part") and Debris_Variables.HitboxToggle.HitBox then
-                            Function_Storage.UpdateHitboxSize(Debris_Variables.HitboxToggle.HitBox, 0.5, getgenv().Settings.HitboxInput)
-                        end
-                    else
-                        if Debris_Variables.HitboxToggle.HitBox:IsA("Part") and Debris_Variables.HitboxToggle.HitBox then
-                            Function_Storage.UpdateHitboxSize(Debris_Variables.HitboxToggle.HitBox, 1, 2.5)
-                        end
-                    end
-                else
-                    if Debris_Variables.HitboxToggle.Char.Value ~= character then
-                        if Debris_Variables.HitboxToggle.HitBox:IsA("Part") and Debris_Variables.HitboxToggle.HitBox then
-                            Function_Storage.UpdateHitboxSize(Debris_Variables.HitboxToggle.HitBox, 0.5, getgenv().Settings.HitboxInput)
-                        end
-                    else
-                        if Debris_Variables.HitboxToggle.HitBox:IsA("Part") and Debris_Variables.HitboxToggle.HitBox then
-                            Function_Storage.UpdateHitboxSize(Debris_Variables.HitboxToggle.HitBox, 1, 2.5)
-                        end
-                    end
+                if Debris_Variables.HitboxToggle.HitBox:IsA("Part") and Debris_Variables.HitboxToggle.HitBox then
+                    Function_Storage.UpdateHitboxSize(Debris_Variables.HitboxToggle.HitBox, 0.5, getgenv().Settings.HitboxInput)
                 end
+                -- if Debris_Variables.HitboxToggle.FootBall and Debris_Variables.HitboxToggle.FootBall.Parent == Services.Workspace then
+                --     if Debris_Variables.HitboxToggle.Char.Value ~= character then
+                --         if Debris_Variables.HitboxToggle.HitBox:IsA("Part") and Debris_Variables.HitboxToggle.HitBox then
+                --             Function_Storage.UpdateHitboxSize(Debris_Variables.HitboxToggle.HitBox, 0.5, getgenv().Settings.HitboxInput)
+                --         end
+                --     else
+                --         if Debris_Variables.HitboxToggle.HitBox:IsA("Part") and Debris_Variables.HitboxToggle.HitBox then
+                --             Function_Storage.UpdateHitboxSize(Debris_Variables.HitboxToggle.HitBox, 1, 2.5)
+                --         end
+                --     end
+                -- else
+                --     if Debris_Variables.HitboxToggle.Char.Value ~= character then
+                --         if Debris_Variables.HitboxToggle.HitBox:IsA("Part") and Debris_Variables.HitboxToggle.HitBox then
+                --             Function_Storage.UpdateHitboxSize(Debris_Variables.HitboxToggle.HitBox, 0.5, getgenv().Settings.HitboxInput)
+                --         end
+                --     else
+                --         if Debris_Variables.HitboxToggle.HitBox:IsA("Part") and Debris_Variables.HitboxToggle.HitBox then
+                --             Function_Storage.UpdateHitboxSize(Debris_Variables.HitboxToggle.HitBox, 1, 2.5)
+                --         end
+                --     end
+                -- end
             end
             task.wait(.1)
             if not HitboxToggle.Value and Debris_Variables.HitboxToggle.HitBox then
@@ -1344,37 +1428,66 @@ do
     AutoDribble:OnChanged(function()
         task.spawn(function()
             getgenv().Settings.AutoDribble = AutoDribble.Value
+            SaveSetting()
         end)
     end)
     Services.RunServices.Heartbeat:Connect(function()
         if not AutoDribble.Value then return end
 
-        for PlayerIndex, PlayerValue in pairs(Debris_Variables.AutoDribble.tracked) do
-            if PlayerIndex and PlayerIndex:FindFirstChild("HumanoidRootPart") then
-                Debris_Variables.AutoDribble.TargetPlayer = Services.Players:FindFirstChild(PlayerIndex.Name)
-                if Debris_Variables.AutoDribble.TargetPlayer and Debris_Variables.AutoDribble.TargetPlayer.Team == player.Team then wait() end
+        local animationController = Services.ReplicatedStorage:WaitForChild("Controllers"):WaitForChild("AnimatonController")
+        local slideAnimation = animationController:WaitForChild("Isagi")
 
-                Debris_Variables.AutoDribble.Distance = (humanoidrootpart.Position - PlayerIndex.HumanoidRootPart.Position).Magnitude
-                Debris_Variables.AutoDribble.Sliding = PlayerIndex:FindFirstChild("Values") and PlayerIndex.Values:FindFirstChild("Sliding")
-                Debris_Variables.AutoDribble.isSliding = Debris_Variables.AutoDribble.Sliding and Debris_Variables.AutoDribble.Sliding.Value
+        local animator = humanoid:FindFirstChildOfClass("Animator")
+        if not animator then
+            animator = Instance.new("Animator")
+            animator.Parent = humanoid
+        end
 
-                for SlideIndex, SlideValue in pairs(PlayerIndex:GetChildren()) do
-                    if SlideValue.Name:match("^Slide%d+$") or Debris_Variables.AutoDribble.isSliding then
-                        if Debris_Variables.AutoDribble.Distance <= 20 and not data.inside then
-                            if Function_Storage.triggerQ(PlayerIndex) then
-                                Debris_Variables.AutoDribble.tracked[PlayerIndex].inside = true
-                            end
-                        elseif Debris_Variables.AutoDribble.Distance > 20 then
-                            Debris_Variables.AutoDribble.tracked[PlayerIndex].inside = false
-                        end
-                        break
+        local animationTrack = animator:LoadAnimation(slideAnimation)
+
+        for DribbleIndex, DribbleValue in pairs(workspace:GetChildren()) do
+            if DribbleValue:IsA("Model") and DribbleValue ~= character and DribbleValue:FindFirstChild("Values") then
+                local TargetHumanoidRootPart = DribbleValue:FindFirstChild("HumanoidRootPart")
+                local TargetValue = DribbleValue:FindFirstChild("Values")
+                local Distance = (TargetHumanoidRootPart.Position - humanoidrootpart.Position).Magnitude
+                if Distance <= 20 and TargetValue.Sliding.Value then
+                    Remotes.Dribble:FireServer()
+                    if character.Values.Dribbling.Value then
+                        animationTrack:Play()
                     end
                 end
             end
         end
+
+        -- for PlayerIndex, PlayerValue in pairs(Debris_Variables.AutoDribble.tracked) do
+        --     if PlayerIndex and PlayerIndex:FindFirstChild("HumanoidRootPart") then
+        --         Debris_Variables.AutoDribble.TargetPlayer = Services.Players:FindFirstChild(PlayerIndex.Name)
+        --         if Debris_Variables.AutoDribble.TargetPlayer and Debris_Variables.AutoDribble.TargetPlayer.Team == player.Team then wait() end
+
+        --         Debris_Variables.AutoDribble.Distance = (humanoidrootpart.Position - PlayerIndex.HumanoidRootPart.Position).Magnitude
+        --         Debris_Variables.AutoDribble.Sliding = PlayerIndex:FindFirstChild("Values") and PlayerIndex.Values:FindFirstChild("Sliding")
+        --         Debris_Variables.AutoDribble.isSliding = Debris_Variables.AutoDribble.Sliding and Debris_Variables.AutoDribble.Sliding.Value
+
+        --         for SlideIndex, SlideValue in pairs(PlayerIndex:GetChildren()) do
+        --             if SlideValue.Name:match("^Slide%d+$") or Debris_Variables.AutoDribble.isSliding then
+        --                 if Debris_Variables.AutoDribble.Distance <= 20 and not data.inside then
+        --                     if Function_Storage.triggerQ(PlayerIndex) then
+        --                         Debris_Variables.AutoDribble.tracked[PlayerIndex].inside = true
+        --                     end
+        --                 elseif Debris_Variables.AutoDribble.Distance > 20 then
+        --                     Debris_Variables.AutoDribble.tracked[PlayerIndex].inside = false
+        --                 end
+        --                 break
+        --             end
+        --         end
+        --     end
+        -- end
     end)
     vipToggle:OnChanged(function()
         task.spawn(function()
+            getgenv().Settings.vipToggle = vipToggle.Value
+            SaveSetting()
+
             Debris_Variables.vipToggle.hasVIP = player:FindFirstChild("HasVIP")
 
             if Debris_Variables.vipToggle.hasVIP then
@@ -1407,43 +1520,12 @@ do
             Function_Storage.shootBall()
         end)
     end)
-    InfiniteStamina:OnChanged(function()
-        task.spawn(function()
-            local stats = player:FindFirstChild("PlayerStats")
-            local originalStamina = stats and stats:FindFirstChild("Stamina")
-            
-            if InfiniteStamina.Value then
-                -- ย้าย Stamina ไปไว้ที่ ReplicatedStorage
-                if originalStamina then
-                    originalStamina.Parent = Services.ReplicatedStorage
-                end
-    
-                -- สร้าง fakeStamina
-                local fakeStamina = Instance.new("NumberValue")
-                fakeStamina.Name = "Stamina"
-                fakeStamina.Value = math.huge
-                fakeStamina.Parent = stats
-            else
-                pcall(function()
-                    -- ลบ fakeStamina
-                    local fakeStamina = stats and stats:FindFirstChild("Stamina")
-                    if fakeStamina then
-                        fakeStamina:Destroy()
-                    end
-        
-                    -- ย้าย stamina กลับมาที่เดิม
-                    local storedStamina = Services.ReplicatedStorage:FindFirstChild("Stamina")
-                    if storedStamina then
-                        storedStamina.Parent = stats
-                    end
-                end)
-            end
-        end)
-    end)
 
     -------------------------------------------------------[[ VISUAL SCRIPT ]]-------------------------------------------------------
     espToggle:OnChanged(function()
         Debris_Variables.ESP_Features.espEnabled = espToggle.Value
+        getgenv().Settings.espToggle = espToggle.Value
+        SaveSetting()
         task.spawn(function()
             for _, data in pairs(Debris_Variables.ESP_Features.espObjects) do
                 for _, obj in ipairs(data) do
@@ -1455,6 +1537,8 @@ do
     espStyleToggle:OnChanged(function()
         task.spawn(function()
             Debris_Variables.ESP_Features.espFeatures["Style"] = espStyleToggle.Value
+            getgenv().Settings.espStyleToggle = espStyleToggle.Value
+            SaveSetting()
             for _, data in pairs(Debris_Variables.ESP_Features.espObjects) do
                 for _, obj in ipairs(data) do
                     if obj.feature == "Style" then
@@ -1467,6 +1551,8 @@ do
     espAwakeningToggle:OnChanged(function()
         task.spawn(function()
             Debris_Variables.ESP_Features.espFeatures["Awakening"] = espAwakeningToggle.Value
+            getgenv().Settings.espAwakeningToggle = espAwakeningToggle.Value
+            SaveSetting()
             for _, data in pairs(Debris_Variables.ESP_Features.espObjects) do
                 for _, obj in ipairs(data) do
                     if obj.feature == "Awakening" then
@@ -1479,6 +1565,8 @@ do
     espFlowToggle:OnChanged(function()
         task.spawn(function()
             Debris_Variables.ESP_Features.espFeatures["Flow"] = espFlowToggle.Value
+            getgenv().Settings.espFlowToggle = espFlowToggle.Value
+            SaveSetting()
             for _, data in pairs(Debris_Variables.ESP_Features.espObjects) do
                 for _, obj in ipairs(data) do
                     if obj.feature == "Flow" then
@@ -1491,6 +1579,8 @@ do
     espStaminaToggle:OnChanged(function()
         task.spawn(function()
             Debris_Variables.ESP_Features.espFeatures["Stamina"] = espStaminaToggle.Value
+            getgenv().Settings.espStaminaToggle = espStaminaToggle.Value
+            SaveSetting()
             for _, data in pairs(Debris_Variables.ESP_Features.espObjects) do
                 for _, obj in ipairs(data) do
                     if obj.feature == "Stamina" then
@@ -1503,12 +1593,13 @@ do
     BallPredicToggle:OnChanged(function()
         task.spawn(function()
             getgenv().Settings.BallPredicToggle = BallPredicToggle.Value
+            SaveSetting()
         end)
     end)
-    getgenv().Settings = {
-        ["RayColor"] = Color3.new(1, 0, 0), -- สีของเส้น (แดง)
-        ["RayThickness"] = 0.2, -- ความหนาของเส้น
-        ["TweenSpeed"] = 0.0001 -- ความเร็วของ Tween
+    getgenv().SettingsRay = {
+        ["RayColor"] = Color3.new(1, 0, 0), -- à¸ªà¸µà¸‚à¸­à¸‡à¹€à¸ªà¹‰à¸™ (à¹à¸”à¸‡)
+        ["RayThickness"] = 0.2, -- à¸„à¸§à¸²à¸¡à¸«à¸™à¸²à¸‚à¸­à¸‡à¹€à¸ªà¹‰à¸™
+        ["TweenSpeed"] = 0.0001 -- à¸„à¸§à¸²à¸¡à¹€à¸£à¹‡à¸§à¸‚à¸­à¸‡ Tween
     }  
 
     function getballs()
@@ -1521,7 +1612,7 @@ do
     end
     
     function updateBall()
-        if not getgenv().Settings.BallPredicToggle then return end -- ถ้า Toggle ปิด ไม่ต้องอัปเดตบอล
+        if not getgenv().Settings.BallPredicToggle then return end -- à¸–à¹‰à¸² Toggle à¸›à¸´à¸” à¹„à¸¡à¹ˆà¸•à¹‰à¸­à¸‡à¸­à¸±à¸›à¹€à¸”à¸•à¸šà¸­à¸¥
     
         local newBall = getballs()
         if newBall and newBall ~= Debris_Variables.Raycast.ball then
@@ -1536,8 +1627,8 @@ do
             Debris_Variables.Raycast.rayPart.Anchored = true
             Debris_Variables.Raycast.rayPart.CanCollide = false
             Debris_Variables.Raycast.rayPart.Material = Enum.Material.Neon
-            Debris_Variables.Raycast.rayPart.Color = getgenv().Settings["RayColor"]
-            Debris_Variables.Raycast.rayPart.Size = Vector3.new(getgenv().Settings["RayThickness"], getgenv().Settings["RayThickness"], 1)
+            Debris_Variables.Raycast.rayPart.Color = getgenv().SettingsRay["RayColor"]
+            Debris_Variables.Raycast.rayPart.Size = Vector3.new(getgenv().SettingsRay["RayThickness"], getgenv().SettingsRay["RayThickness"], 1)
             Debris_Variables.Raycast.rayPart.Parent = workspace
         end
     end
@@ -1545,7 +1636,7 @@ do
     function predictBallPath()
         if not getgenv().Settings.BallPredicToggle then
             if Debris_Variables.Raycast.rayPart then
-                Debris_Variables.Raycast.rayPart.Transparency = 1 -- ซ่อนเส้นเมื่อปิด Toggle
+                Debris_Variables.Raycast.rayPart.Transparency = 1 -- à¸‹à¹ˆà¸­à¸™à¹€à¸ªà¹‰à¸™à¹€à¸¡à¸·à¹ˆà¸­à¸›à¸´à¸” Toggle
             end
             return
         end
@@ -1556,12 +1647,12 @@ do
         local currentPosition = Debris_Variables.Raycast.ball.Position
         local movementAmount = (currentPosition - Debris_Variables.Raycast.lastPosition).Magnitude
     
-        -- ตรวจสอบว่าบอลกำลังเคลื่อนที่หรือไม่
+        -- à¸•à¸£à¸§à¸ˆà¸ªà¸­à¸šà¸§à¹ˆà¸²à¸šà¸­à¸¥à¸à¸³à¸¥à¸±à¸‡à¹€à¸„à¸¥à¸·à¹ˆà¸­à¸™à¸—à¸µà¹ˆà¸«à¸£à¸·à¸­à¹„à¸¡à¹ˆ
         if velocity.Magnitude < Debris_Variables.Raycast.VELOCITY_THRESHOLD or movementAmount < Debris_Variables.Raycast.MOVEMENT_THRESHOLD then
             if Debris_Variables.Raycast.rayPart then
-                -- ถ้าบอลช้ามาก ปรับขนาดเส้นให้เล็กลง แทนที่จะซ่อน
+                -- à¸–à¹‰à¸²à¸šà¸­à¸¥à¸Šà¹‰à¸²à¸¡à¸²à¸ à¸›à¸£à¸±à¸šà¸‚à¸™à¸²à¸”à¹€à¸ªà¹‰à¸™à¹ƒà¸«à¹‰à¹€à¸¥à¹‡à¸à¸¥à¸‡ à¹à¸—à¸™à¸—à¸µà¹ˆà¸ˆà¸°à¸‹à¹ˆà¸­à¸™
                 local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-                local tweenGoal = {Size = Vector3.new(getgenv().Settings["RayThickness"], getgenv().Settings["RayThickness"], 0.1)}
+                local tweenGoal = {Size = Vector3.new(getgenv().SettingsRay["RayThickness"], getgenv().SettingsRay["RayThickness"], 0.1)}
                 if Debris_Variables.Raycast.tween then Debris_Variables.Raycast.tween:Cancel() end
                 Debris_Variables.Raycast.tween = Services.TweenService:Create(Debris_Variables.Raycast.rayPart, tweenInfo, tweenGoal)
                 Debris_Variables.Raycast.tween:Play()
@@ -1569,7 +1660,7 @@ do
             return
         end
     
-        -- สร้างเส้นถ้ายังไม่มี
+        -- à¸ªà¸£à¹‰à¸²à¸‡à¹€à¸ªà¹‰à¸™à¸–à¹‰à¸²à¸¢à¸±à¸‡à¹„à¸¡à¹ˆà¸¡à¸µ
         createRayPart()
     
         local position = currentPosition
@@ -1593,23 +1684,23 @@ do
             endPos = newPosition
         end
     
-        -- อัปเดตตำแหน่งของเส้นด้วย Tween
+        -- à¸­à¸±à¸›à¹€à¸”à¸•à¸•à¸³à¹à¸«à¸™à¹ˆà¸‡à¸‚à¸­à¸‡à¹€à¸ªà¹‰à¸™à¸”à¹‰à¸§à¸¢ Tween
         local distance = (endPos - Debris_Variables.Raycast.ball.Position).Magnitude
-        local newSize = Vector3.new(getgenv().Settings["RayThickness"], getgenv().Settings["RayThickness"], distance)
+        local newSize = Vector3.new(getgenv().SettingsRay["RayThickness"], getgenv().SettingsRay["RayThickness"], distance)
         local newPosition = Debris_Variables.Raycast.ball.Position + (endPos - Debris_Variables.Raycast.ball.Position) / 2
         local newCFrame = CFrame.lookAt(newPosition, endPos)
     
-        local tweenInfo = TweenInfo.new(getgenv().Settings["TweenSpeed"], Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+        local tweenInfo = TweenInfo.new(getgenv().SettingsRay["TweenSpeed"], Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
         local tweenGoal = {Size = newSize, Position = newPosition, CFrame = newCFrame}
     
         if Debris_Variables.Raycast.tween then Debris_Variables.Raycast.tween:Cancel() end
         Debris_Variables.Raycast.tween = Services.TweenService:Create(Debris_Variables.Raycast.rayPart, tweenInfo, tweenGoal)
         Debris_Variables.Raycast.tween:Play()
     
-        -- แสดงเส้นตลอดเวลา
+        -- à¹à¸ªà¸”à¸‡à¹€à¸ªà¹‰à¸™à¸•à¸¥à¸­à¸”à¹€à¸§à¸¥à¸²
         Debris_Variables.Raycast.rayPart.Transparency = 0
     
-        Debris_Variables.Raycast.lastPosition = currentPosition -- อัปเดตตำแหน่งล่าสุด
+        Debris_Variables.Raycast.lastPosition = currentPosition -- à¸­à¸±à¸›à¹€à¸”à¸•à¸•à¸³à¹à¸«à¸™à¹ˆà¸‡à¸¥à¹ˆà¸²à¸ªà¸¸à¸”
     end
     
     Services.RunServices.Stepped:Connect(function()
@@ -1621,6 +1712,8 @@ do
     -------------------------------------------------------[[ KAITAN SCRIPT ]]-------------------------------------------------------
     AutoFarmTweenToggle:OnChanged(function()
         task.spawn(function()
+            getgenv().Settings.AutoFarmTweenToggle = AutoFarmTweenToggle.Value
+            SaveSetting()
             if AutoFarmTweenToggle.Value then
                 task.spawn(function()
                     while AutoFarmTweenToggle.Value do
@@ -1748,6 +1841,8 @@ do
     end)
     AutoFarmTeleportToggle:OnChanged(function()
         task.spawn(function()
+            getgenv().Settings.AutoFarmTeleportToggle = AutoFarmTeleportToggle.Value
+            SaveSetting()
             if AutoFarmTeleportToggle.Value then
                 task.spawn(function()
                     while AutoFarmTeleportToggle.Value do
@@ -1828,14 +1923,17 @@ do
             end
         end)
     end)
-    -- WhiteScreen:OnChanged(function()
-    --     task.spawn(function()
-    --         Services.RunServices:Set3dRenderingEnabled(WhiteScreen.Value)
-    --     end)
-    -- end)
+    WhiteScreen:OnChanged(function()
+        getgenv().Settings.WhiteScreen = WhiteScreen.Value
+        SaveSetting()
+        task.spawn(function()
+            Services.RunServices:Set3dRenderingEnabled(not WhiteScreen.Value)
+        end)
+    end)
     AutoGoalKeeper:OnChanged(function()
         task.spawn(function()
             getgenv().Settings.AutoGoalKeeper = AutoGoalKeeper.Value
+            SaveSetting()
         end)
     end)
     AutoGKKeybind:OnClick(function()
@@ -1858,79 +1956,50 @@ do
     end)
     AutoTeamToggle:OnChanged(function()
         task.spawn(function()
+            getgenv().Settings.AutoTeamToggle = AutoTeamToggle.Value
+            SaveSetting()
             while AutoTeamToggle.Value do
-                -- ตรวจสอบว่าผู้เล่นอยู่ในทีม Visitor
+                -- à¸•à¸£à¸§à¸ˆà¸ªà¸­à¸šà¸§à¹ˆà¸²à¸œà¸¹à¹‰à¹€à¸¥à¹ˆà¸™à¸­à¸¢à¸¹à¹ˆà¹ƒà¸™à¸—à¸µà¸¡ Visitor
                 if player.Team and player.Team.Name == "Visitor" then
-                    Debris_Variables.AutoTeamToggle.selectedValue = getgenv().Settings.TeamPositionDropdown
-                    if Debris_Variables.AutoTeamToggle.selectedValue then
-                        Debris_Variables.AutoTeamToggle.team, Debris_Variables.AutoTeamToggle.position = unpack(string.split(Debris_Variables.AutoTeamToggle.selectedValue, "_"))
-                        if Debris_Variables.AutoTeamToggle.team and Debris_Variables.AutoTeamToggle.position then
-                            -- ส่งคำสั่งเลือกทีมและตำแหน่งไปยังเซิร์ฟเวอร์
-                            Remotes.TeamService.RE.Select:FireServer(Debris_Variables.AutoTeamToggle.team, Debris_Variables.AutoTeamToggle.position)
-                            Fluent:Notify({
-                                Title = "Team Selection",
-                                Content = "Attempted to select team: " .. Debris_Variables.AutoTeamToggle.team .. ", position: " .. Debris_Variables.AutoTeamToggle.position,
-                                Duration = 2
-                            })
-                        else
-                            Fluent:Notify({
-                                Title = "Error",
-                                Content = "Invalid team or position selected.",
-                                Duration = 2
-                            })
-                        end
-                    else
-                        Fluent:Notify({
-                            Title = "Error",
-                            Content = "No team or position selected.",
-                            Duration = 2
-                        })
-                    end
+                    Remotes.TeamService.RE.Select:FireServer(unpack(string.split(getgenv().Settings.TeamPositionDropdown, "_")))
                 end
         
-                task.wait(3) -- รอ 3 วินาทีก่อนตรวจสอบใหม่
+                task.wait(3) -- à¸£à¸­ 3 à¸§à¸´à¸™à¸²à¸—à¸µà¸à¹ˆà¸­à¸™à¸•à¸£à¸§à¸ˆà¸ªà¸­à¸šà¹ƒà¸«à¸¡à¹ˆ
             end
         end)
     end)
     AutoTeamForAutoFarmToggle:OnChanged(function()
         task.spawn(function()
-            while AutoTeamToggle.Value do
-                -- ตรวจสอบว่าผู้เล่นอยู่ในทีม Visitor
+            getgenv().Settings.AutoTeamForAutoFarmToggle = AutoTeamForAutoFarmToggle.Value
+            SaveSetting()
+            while AutoTeamForAutoFarmToggle.Value do
+                local Teams = {
+                    "Home",
+                    "Away"
+                }
+                local Position = {
+                    "CF",
+                    "LE",
+                    "RW",
+                    "CM",
+                    "GK",
+                }
                 if player.Team and player.Team.Name == "Visitor" then
-                    Debris_Variables.AutoTeamToggle.selectedValue = getgenv().Settings.TeamPositionDropdown
-                    if Debris_Variables.AutoTeamToggle.selectedValue then
-                        Debris_Variables.AutoTeamToggle.team, Debris_Variables.AutoTeamToggle.position = unpack(string.split(Debris_Variables.AutoTeamToggle.selectedValue, "_"))
-                        if Debris_Variables.AutoTeamToggle.team and Debris_Variables.AutoTeamToggle.position then
-                            -- ส่งคำสั่งเลือกทีมและตำแหน่งไปยังเซิร์ฟเวอร์
-                            Remotes.TeamService.RE.Select:FireServer(Debris_Variables.AutoTeamToggle.team, Debris_Variables.AutoTeamToggle.position)
-                            Fluent:Notify({
-                                Title = "Team Selection",
-                                Content = "Attempted to select team: " .. Debris_Variables.AutoTeamToggle.team .. ", position: " .. Debris_Variables.AutoTeamToggle.position,
-                                Duration = 2
-                            })
-                        else
-                            Fluent:Notify({
-                                Title = "Error",
-                                Content = "Invalid team or position selected.",
-                                Duration = 2
-                            })
+                    for _, team in ipairs(Teams) do
+                        for _, position in ipairs(Position) do
+                            Remotes.TeamService.RE.Select:FireServer(team, position)
                         end
-                    else
-                        Fluent:Notify({
-                            Title = "Error",
-                            Content = "No team or position selected.",
-                            Duration = 2
-                        })
-                    end
+                    end                    
                 end
         
-                task.wait(3) -- รอ 3 วินาทีก่อนตรวจสอบใหม่
+                task.wait(3) -- à¸£à¸­ 3 à¸§à¸´à¸™à¸²à¸—à¸µà¸à¹ˆà¸­à¸™à¸•à¸£à¸§à¸ˆà¸ªà¸­à¸šà¹ƒà¸«à¸¡à¹ˆ
             end
         end)
     end)
     InstantGoalToggle:OnChanged(function()
         task.spawn(function()
             getgenv().Settings.InstantGoalToggle = InstantGoalToggle.Value
+            SaveSetting()
         end)
     end)
     Remotes.Shoot.OnClientEvent:Connect(function()
@@ -1940,6 +2009,7 @@ do
     end)
     AutoHopToggle:OnChanged(function(v)
         getgenv().Settings.AutoHopToggle = v
+        SaveSetting()
         if v then
             task.spawn(Function_Storage.autoHop)
         end
@@ -1949,6 +2019,7 @@ do
     KaiserToggle:OnChanged(function()
         task.spawn(function()
             getgenv().Settings.KaiserToggle = KaiserToggle.Value
+            SaveSetting()
         end)
     end)
     Remotes.Shoot.OnClientEvent:Connect(function()
@@ -1965,6 +2036,8 @@ do
     CurveShotProMaxToggle:OnChanged(function()
         task.spawn(function()
             getgenv().Settings.CurveShotProMaxToggle = CurveShotProMaxToggle.Value
+            getgenv().Settings.CurveShotProMaxToggle = CurveShotProMaxToggle.Value
+            SaveSetting()
         end)
     end)
     Remotes.Shoot.OnClientEvent:Connect(function()
@@ -1980,10 +2053,14 @@ do
     end)
     NoCooldownStealToggle:OnChanged(function()
         task.spawn(function()
-            if NoCooldownStealToggle.Value then        
+            getgenv().Settings.NoCooldownStealToggle = NoCooldownStealToggle.Value
+            SaveSetting()
+            if NoCooldownStealToggle.Value then   
+                local originalSteal = require(game:GetService("ReplicatedStorage").Controllers.AbilityController.Abilities.Bachira.Steal)
+                
                 Debris_Variables.NoCooldownStealToggle.newSteal = function(v11, v12, v13)
-                    -- ข้ามเงื่อนไขคูลดาวน์และพลังงาน
-                    if false then -- ข้ามการตรวจสอบทุกอย่าง
+                    -- à¸‚à¹‰à¸²à¸¡à¹€à¸‡à¸·à¹ˆà¸­à¸™à¹„à¸‚à¸„à¸¹à¸¥à¸”à¸²à¸§à¸™à¹Œà¹à¸¥à¸°à¸žà¸¥à¸±à¸‡à¸‡à¸²à¸™
+                    if false then -- à¸‚à¹‰à¸²à¸¡à¸à¸²à¸£à¸•à¸£à¸§à¸ˆà¸ªà¸­à¸šà¸—à¸¸à¸à¸­à¸¢à¹ˆà¸²à¸‡
                         return
                     end
                 
@@ -1994,10 +2071,10 @@ do
                         v11.SlideTrove:Destroy()
                     end
                 
-                    -- ส่วนสำหรับเมื่อผู้เล่นมีบอล
+                    -- à¸ªà¹ˆà¸§à¸™à¸ªà¸³à¸«à¸£à¸±à¸šà¹€à¸¡à¸·à¹ˆà¸­à¸œà¸¹à¹‰à¹€à¸¥à¹ˆà¸™à¸¡à¸µà¸šà¸­à¸¥
                     if v13.Values.HasBall.Value then
-                        v11.AbilityController:AbilityCooldown("1", 1) -- ไม่มีคูลดาวน์
-                        v11.StaminaService.DecreaseStamina:Fire(10) -- ไม่ลด Stamina
+                        v11.AbilityController:AbilityCooldown("1", 1) -- à¹„à¸¡à¹ˆà¸¡à¸µà¸„à¸¹à¸¥à¸”à¸²à¸§à¸™à¹Œ
+                        v11.StaminaService.DecreaseStamina:Fire(10) -- à¹„à¸¡à¹ˆà¸¥à¸” Stamina
                         v11.StatesController.States.Ability = true
                         v11.StatesController.OwnWalkState = true
                         v11.StatesController.SpeedBoost = 5
@@ -2023,28 +2100,28 @@ do
                             v11.BallController:DragBall(v14)
                         end)
                     else
-                        -- ส่วนสำหรับเมื่อผู้เล่นไม่มีบอล
-                        v11.AbilityController:AbilityCooldown("1", 1) -- ไม่มีคูลดาวน์
-                        v11.StaminaService.DecreaseStamina:Fire(10) -- ไม่ลด Stamina
+                        -- à¸ªà¹ˆà¸§à¸™à¸ªà¸³à¸«à¸£à¸±à¸šà¹€à¸¡à¸·à¹ˆà¸­à¸œà¸¹à¹‰à¹€à¸¥à¹ˆà¸™à¹„à¸¡à¹ˆà¸¡à¸µà¸šà¸­à¸¥
+                        v11.AbilityController:AbilityCooldown("1", 1) -- à¹„à¸¡à¹ˆà¸¡à¸µà¸„à¸¹à¸¥à¸”à¸²à¸§à¸™à¹Œ
+                        v11.StaminaService.DecreaseStamina:Fire(10) -- à¹„à¸¡à¹ˆà¸¥à¸” Stamina
                         v11.Animations:StopAnims()
                         v11.Animations.Abilities.Steal.Priority = Enum.AnimationPriority.Action
                         v11.Animations.Abilities.Steal:Play()
                 
-                        -- เรียกใช้ RemoteEvent "Slide" เพื่อ FireServer
+                        -- à¹€à¸£à¸µà¸¢à¸à¹ƒà¸Šà¹‰ RemoteEvent "Slide" à¹€à¸žà¸·à¹ˆà¸­ FireServer
                         game:GetService("ReplicatedStorage").Packages.Knit.Services.BallService.RE.Slide:FireServer()
                 
-                        -- ใช้ TweenService แทนการพุ่งด้วย BodyVelocity
+                        -- à¹ƒà¸Šà¹‰ TweenService à¹à¸—à¸™à¸à¸²à¸£à¸žà¸¸à¹ˆà¸‡à¸”à¹‰à¸§à¸¢ BodyVelocity
                         local rootPart = v13.HumanoidRootPart
                         if rootPart then
-                            local targetPosition = rootPart.Position + (rootPart.CFrame.LookVector * 30) -- พุ่งไปข้างหน้า 10 หน่วย
+                            local targetPosition = rootPart.Position + (rootPart.CFrame.LookVector * 30) -- à¸žà¸¸à¹ˆà¸‡à¹„à¸›à¸‚à¹‰à¸²à¸‡à¸«à¸™à¹‰à¸² 10 à¸«à¸™à¹ˆà¸§à¸¢
                 
                             local tweenInfo = TweenInfo.new(
-                                0.4, -- ระยะเวลาพุ่ง (0.5 วินาที)
-                                Enum.EasingStyle.Linear, -- รูปแบบการเคลื่อนไหวแบบ Linear
-                                Enum.EasingDirection.Out, -- ทิศทางการเคลื่อนไหวแบบ Out
-                                0, -- จำนวนรอบ (0 = ไม่ทำซ้ำ)
-                                false, -- ไม่ย้อนกลับ
-                                0 -- ไม่มีดีเลย์ก่อนเริ่ม Tween
+                                0.4, -- à¸£à¸°à¸¢à¸°à¹€à¸§à¸¥à¸²à¸žà¸¸à¹ˆà¸‡ (0.5 à¸§à¸´à¸™à¸²à¸—à¸µ)
+                                Enum.EasingStyle.Linear, -- à¸£à¸¹à¸›à¹à¸šà¸šà¸à¸²à¸£à¹€à¸„à¸¥à¸·à¹ˆà¸­à¸™à¹„à¸«à¸§à¹à¸šà¸š Linear
+                                Enum.EasingDirection.Out, -- à¸—à¸´à¸¨à¸—à¸²à¸‡à¸à¸²à¸£à¹€à¸„à¸¥à¸·à¹ˆà¸­à¸™à¹„à¸«à¸§à¹à¸šà¸š Out
+                                0, -- à¸ˆà¸³à¸™à¸§à¸™à¸£à¸­à¸š (0 = à¹„à¸¡à¹ˆà¸—à¸³à¸‹à¹‰à¸³)
+                                false, -- à¹„à¸¡à¹ˆà¸¢à¹‰à¸­à¸™à¸à¸¥à¸±à¸š
+                                0 -- à¹„à¸¡à¹ˆà¸¡à¸µà¸”à¸µà¹€à¸¥à¸¢à¹Œà¸à¹ˆà¸­à¸™à¹€à¸£à¸´à¹ˆà¸¡ Tween
                             )
                 
                             local tweenGoal = {Position = targetPosition}
@@ -2053,14 +2130,14 @@ do
                             tween:Play()
                 
                             tween.Completed:Connect(function()
-                                tween:Destroy() -- ลบ Tween หลังการใช้งาน
+                                tween:Destroy() -- à¸¥à¸š Tween à¸«à¸¥à¸±à¸‡à¸à¸²à¸£à¹ƒà¸Šà¹‰à¸‡à¸²à¸™
                             end)
                         end
                     end
                 end
                 
-                -- แทนที่ฟังก์ชันใน ModuleScript
-                hookfunction(Debris_Variables.NoCooldownStealToggle.originalSteal, Debris_Variables.NoCooldownStealToggle.newSteal)
+                -- à¹à¸—à¸™à¸—à¸µà¹ˆà¸Ÿà¸±à¸‡à¸à¹Œà¸Šà¸±à¸™à¹ƒà¸™ ModuleScript
+                hookfunction(originalSteal, Debris_Variables.NoCooldownStealToggle.newSteal)
                 Fluent:Notify({ Title = "No Cooldown - Steal Enabled", Content = "Cooldown removed for Steal.", Duration = 3 })
             else
                 Fluent:Notify({ Title = "No Cooldown - Steal Disabled", Content = "Cooldown restored for Steal.", Duration = 3 })
@@ -2069,9 +2146,11 @@ do
     end)
     NoCooldownAirDribbleToggle:OnChanged(function()
         task.spawn(function()
+            getgenv().Settings.NoCooldownAirDribbleToggle = NoCooldownAirDribbleToggle.Value
+            SaveSetting()
             if NoCooldownAirDribbleToggle.Value then
                 -- Hook the original AirDribble function
-                local originalAirDribble = Debris_Variables.NoCooldownAirDribbleToggle.airdribbleModule
+                local airdribbleModule = require(game:GetService("ReplicatedStorage").Controllers.AbilityController.Abilities.Nagi.AirDribble)
                 
                 -- Define the new function
                 local function newAirDribble(v13, v14, v15)
@@ -2163,7 +2242,7 @@ do
                 end
                 
                 -- Hook the function using hookfunction
-                hookfunction(originalAirDribble, newAirDribble)
+                hookfunction(airdribbleModule, newAirDribble)
                 Fluent:Notify({ Title = "No Cooldown - AirDribble Enabled", Content = "Cooldown removed for AirDribble.", Duration = 3 })
             else
                 Fluent:Notify({ Title = "No Cooldown - AirDribble Disabled", Content = "Cooldown restored for AirDribble.", Duration = 3 })
@@ -2172,7 +2251,11 @@ do
     end)
     NoCooldownAirDashToggle:OnChanged(function()
         task.spawn(function()
+            getgenv().Settings.NoCooldownAirDashToggle = NoCooldownAirDashToggle.Value
+            SaveSetting()
             if NoCooldownAirDashToggle.Value then
+                local originalAirDash = require(game:GetService("ReplicatedStorage").Controllers.AbilityController.Abilities.Nagi.AirDash)
+                
                 local function newAirDash(v13, v14, v15)
                     if v13.ABC then
                         v13.ABC:Clean()
@@ -2192,10 +2275,32 @@ do
                     v13.Animations.Ball["AirDribble" .. dashDirection]:Play()
                 end
     
-                hookfunction(Debris_Variables.NoCooldownAirDashToggle.originalAirDash, newAirDash)
+                hookfunction(originalAirDash, newAirDash)
                 Fluent:Notify({ Title = "No Cooldown - AirDash Enabled", Content = "Cooldown removed for AirDash.", Duration = 3 })
             else
                 Fluent:Notify({ Title = "No Cooldown - AirDash Disabled", Content = "Cooldown restored for AirDash.", Duration = 3 })
+            end
+        end)
+    end)
+
+    -------------------------------------------------------[[ RAGE SCRIPT ]]-------------------------------------------------------
+    LagSwitchToggle:OnChanged(function()
+        task.spawn(function()
+            getgenv().Settings.LagSwitchToggle = LagSwitchToggle.Value
+            SaveSetting()
+            while LagSwitchToggle.Value do
+                task.wait()
+                local args = {
+                    [1] = 1,
+                    [4] = mouse
+                }
+                
+                for i = 1, 400 do
+                    spawn(function()
+                        game:GetService("ReplicatedStorage").Packages.Knit.Services.BallService.RE.Shoot:FireServer(unpack(args))
+                        task.wait(0.00001)
+                    end)
+                end
             end
         end)
     end)
@@ -2280,89 +2385,102 @@ do
             local UserInputService = game:GetService("UserInputService")
             
             if UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled then
-                local MobileUI = Function_Storage.CreateFeariseHubMobileToggle()
+                if getgenv().Configs["Mobile Mode"] then
+                    local MobileUI = Function_Storage.CreateFeariseHubMobileToggle()
 
-                MobileUI.instantKickToggle.MouseButton1Click:Connect(function()
-                    Function_Storage.shootBall()
-                end)
-                MobileUI.kaiserImpackToggle.MouseButton1Click:Connect(function()
-                    Debris_Variables.KaiserKeybide.State = not KaiserToggle.Value
-                    KaiserToggle:SetValue(Debris_Variables.KaiserKeybide.State)
-                    if Debris_Variables.KaiserKeybide.State then
-                        Fluent:Notify({
-                            Title = "Fearise Hub",
-                            Content = "Kaiser Impack Actived.",
-                            Duration = 3
-                        })
-                    else
-                        Fluent:Notify({
-                            Title = "Fearise Hub",
-                            Content = "Kaiser Impack Not Actived.",
-                            Duration = 3
-                        })
-                    end
-                end)
-                MobileUI.curveShotProMaxToggle.MouseButton1Click:Connect(function()
-                    Debris_Variables.CurveShotProMaxKeybind.State = not CurveShotProMaxToggle.Value
-                    CurveShotProMaxToggle:SetValue(Debris_Variables.CurveShotProMaxKeybind.State)
-                    if Debris_Variables.CurveShotProMaxKeybind.State then
-                        Fluent:Notify({
-                            Title = "Fearise Hub",
-                            Content = "CurveShotProMax Actived.",
-                            Duration = 3
-                        })
-                    else
-                        Fluent:Notify({
-                            Title = "Fearise Hub",
-                            Content = "CurveShotProMax Not Actived.",
-                            Duration = 3
-                        })
-                    end
-                end)
-                MobileUI.autoGKToggle.MouseButton1Click:Connect(function()
-                    Debris_Variables.AutoGKKeybind.State = not AutoGoalKeeper.Value
-                    AutoGoalKeeper:SetValue(Debris_Variables.AutoGKKeybind.State)
-                    if Debris_Variables.AutoGKKeybind.State then
-                        Fluent:Notify({
-                            Title = "Fearise Hub",
-                            Content = "AutoGK Actived.",
-                            Duration = 3
-                        })
-                    else
-                        Fluent:Notify({
-                            Title = "Fearise Hub",
-                            Content = "AutoGK Not Actived.",
-                            Duration = 3
-                        })
-                    end
-                end)
-                MobileUI.hitBoxToggle.MouseButton1Click:Connect(function()
-                    Debris_Variables.HitboxKeybind.State = not HitboxToggle.Value
-                    HitboxToggle:SetValue(Debris_Variables.HitboxKeybind.State)
-                    if Debris_Variables.HitboxKeybind.State then
-                        Fluent:Notify({
-                            Title = "Fearise Hub",
-                            Content = "Hitbox Actived.",
-                            Duration = 3
-                        })
-                    else
-                        Fluent:Notify({
-                            Title = "Fearise Hub",
-                            Content = "Hitbox Not Actived.",
-                            Duration = 3
-                        })
-                    end
-                end)
-                game:GetService("CoreGui").ChildRemoved:Connect(function(Value)
-                    if Value.Name == "FeariseHub" then
-                        MobileUI.feariseHubMobileUI:Destroy()
-                    end
-                end)
+                    MobileUI.instantKickToggle.MouseButton1Click:Connect(function()
+                        Function_Storage.shootBall()
+                    end)
+                    MobileUI.kaiserImpackToggle.MouseButton1Click:Connect(function()
+                        Debris_Variables.KaiserKeybide.State = not KaiserToggle.Value
+                        KaiserToggle:SetValue(Debris_Variables.KaiserKeybide.State)
+                        if Debris_Variables.KaiserKeybide.State then
+                            Fluent:Notify({
+                                Title = "zEE Hub",
+                                Content = "Kaiser Impack Actived.",
+                                Duration = 3
+                            })
+                        else
+                            Fluent:Notify({
+                                Title = "zEE Hub",
+                                Content = "Kaiser Impack Not Actived.",
+                                Duration = 3
+                            })
+                        end
+                    end)
+                    MobileUI.curveShotProMaxToggle.MouseButton1Click:Connect(function()
+                        Debris_Variables.CurveShotProMaxKeybind.State = not CurveShotProMaxToggle.Value
+                        CurveShotProMaxToggle:SetValue(Debris_Variables.CurveShotProMaxKeybind.State)
+                        if Debris_Variables.CurveShotProMaxKeybind.State then
+                            Fluent:Notify({
+                                Title = "zEE Hub",
+                                Content = "CurveShotProMax Actived.",
+                                Duration = 3
+                            })
+                        else
+                            Fluent:Notify({
+                                Title = "zEE Hub",
+                                Content = "CurveShotProMax Not Actived.",
+                                Duration = 3
+                            })
+                        end
+                    end)
+                    MobileUI.autoGKToggle.MouseButton1Click:Connect(function()
+                        Debris_Variables.AutoGKKeybind.State = not AutoGoalKeeper.Value
+                        AutoGoalKeeper:SetValue(Debris_Variables.AutoGKKeybind.State)
+                        if Debris_Variables.AutoGKKeybind.State then
+                            Fluent:Notify({
+                                Title = "zEE Hub",
+                                Content = "AutoGK Actived.",
+                                Duration = 3
+                            })
+                        else
+                            Fluent:Notify({
+                                Title = "zEE Hub",
+                                Content = "AutoGK Not Actived.",
+                                Duration = 3
+                            })
+                        end
+                    end)
+                    MobileUI.hitBoxToggle.MouseButton1Click:Connect(function()
+                        Debris_Variables.HitboxKeybind.State = not HitboxToggle.Value
+                        HitboxToggle:SetValue(Debris_Variables.HitboxKeybind.State)
+                        if Debris_Variables.HitboxKeybind.State then
+                            Fluent:Notify({
+                                Title = "zEE Hub",
+                                Content = "Hitbox Actived.",
+                                Duration = 3
+                            })
+                        else
+                            Fluent:Notify({
+                                Title = "zEE Hub",
+                                Content = "Hitbox Not Actived.",
+                                Duration = 3
+                            })
+                        end
+                    end)
+                    game:GetService("CoreGui").ChildRemoved:Connect(function(Value)
+                        if Value.Name == "zEEHub" then
+                            MobileUI.feariseHubMobileUI:Destroy()
+                        end
+                    end)
+                else
+                    warn("Error: Your Forget Configs")    
+                end
             end
         end
     end
     checkDeviceUi()
 end
+
+SaveManager:SetLibrary(Fluent)
+InterfaceManager:SetLibrary(Fluent)
+
+SaveManager:SetFolder("zEE Hub")
+InterfaceManager:SetFolder("zEE Hub")
+
+SaveManager:BuildConfigSection(Tabs.pageSettings)
+InterfaceManager:BuildInterfaceSection(Tabs.pageSettings)
 
 -- Anti AFK
 task.spawn(function()
@@ -2379,7 +2497,7 @@ task.spawn(function()
 end)
 
 Fluent:Notify({
-    Title = "Fearise Hub",
+    Title = "zEE Hub",
     Content = "Anti AFK Is Actived",
     Duration = 5
 })
