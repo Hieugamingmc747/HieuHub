@@ -109,7 +109,7 @@ function checkDevice()
             local FeariseToggle = CreateToggle()
             FeariseToggle.MouseButton1Click:Connect(function()
                 for _, guiObject in ipairs(game:GetService("CoreGui"):GetChildren()) do
-                    if guiObject.Name == "zEEHub" and guiObject:IsA("ScreenGui") then
+                    if guiObject.Name == "HieuDzEHub" and guiObject:IsA("ScreenGui") then
                         for FrameIndex, FrameValue in pairs(guiObject:GetChildren()) do
                             if FrameValue:IsA("Frame") and FrameValue:FindFirstChild("CanvasGroup") then
                                 FrameValue.Visible = not FrameValue.Visible
@@ -1024,7 +1024,7 @@ do
     end
     Function_Storage.CreateFeariseHubMobileToggle = function()
         local feariseHubMobile = Instance.new("ScreenGui")
-		feariseHubMobile.Name = "zEEHubMobile"
+		feariseHubMobile.Name = "HieuDzHubMobile"
         feariseHubMobile.IgnoreGuiInset = true
         feariseHubMobile.ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets
         feariseHubMobile.ResetOnSpawn = false
