@@ -132,7 +132,7 @@ end
 checkDevice()
 
 local FileName = tostring(game.Players.LocalPlayer.UserId).."_Settings.json"
-local BaseFolder = "zEE Hub"
+local BaseFolder = "HieuDz Hub"
 local SubFolder = "BlueLockRivals"
 
 function SaveSetting() 
@@ -169,7 +169,7 @@ local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/d
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
 local Window = Fluent:CreateWindow({
-    Title = "HieuDz Hub" .. " | ".."BlueLock : Rival".." | ".."[Version 3]",
+    Title = "HieuDz Hub" .. " | ".."BlueLock : Rival".." | ".."[Version 4]",
     SubTitle = "by HieuDz",
     TabWidth = 160,
     Size =  Device, --UDim2.fromOffset(480, 360), --default size (580, 460)
@@ -2396,13 +2396,13 @@ do
                         KaiserToggle:SetValue(Debris_Variables.KaiserKeybide.State)
                         if Debris_Variables.KaiserKeybide.State then
                             Fluent:Notify({
-                                Title = "zEE Hub",
+                                Title = "HieuDz Hub",
                                 Content = "Kaiser Impack Actived.",
                                 Duration = 3
                             })
                         else
                             Fluent:Notify({
-                                Title = "zEE Hub",
+                                Title = "HieuDz Hub",
                                 Content = "Kaiser Impack Not Actived.",
                                 Duration = 3
                             })
@@ -2413,13 +2413,13 @@ do
                         CurveShotProMaxToggle:SetValue(Debris_Variables.CurveShotProMaxKeybind.State)
                         if Debris_Variables.CurveShotProMaxKeybind.State then
                             Fluent:Notify({
-                                Title = "zEE Hub",
+                                Title = "HieuDz Hub",
                                 Content = "CurveShotProMax Actived.",
                                 Duration = 3
                             })
                         else
                             Fluent:Notify({
-                                Title = "zEE Hub",
+                                Title = "HieuDz Hub",
                                 Content = "CurveShotProMax Not Actived.",
                                 Duration = 3
                             })
@@ -2430,13 +2430,13 @@ do
                         AutoGoalKeeper:SetValue(Debris_Variables.AutoGKKeybind.State)
                         if Debris_Variables.AutoGKKeybind.State then
                             Fluent:Notify({
-                                Title = "zEE Hub",
+                                Title = "HieuDz Hub",
                                 Content = "AutoGK Actived.",
                                 Duration = 3
                             })
                         else
                             Fluent:Notify({
-                                Title = "zEE Hub",
+                                Title = "HieuDz Hub",
                                 Content = "AutoGK Not Actived.",
                                 Duration = 3
                             })
@@ -2447,20 +2447,20 @@ do
                         HitboxToggle:SetValue(Debris_Variables.HitboxKeybind.State)
                         if Debris_Variables.HitboxKeybind.State then
                             Fluent:Notify({
-                                Title = "zEE Hub",
+                                Title = "HieuDz Hub",
                                 Content = "Hitbox Actived.",
                                 Duration = 3
                             })
                         else
                             Fluent:Notify({
-                                Title = "zEE Hub",
+                                Title = "HieuDz Hub",
                                 Content = "Hitbox Not Actived.",
                                 Duration = 3
                             })
                         end
                     end)
                     game:GetService("CoreGui").ChildRemoved:Connect(function(Value)
-                        if Value.Name == "zEEHub" then
+                        if Value.Name == "HieuDzHub" then
                             MobileUI.feariseHubMobileUI:Destroy()
                         end
                     end)
@@ -2476,8 +2476,8 @@ end
 SaveManager:SetLibrary(Fluent)
 InterfaceManager:SetLibrary(Fluent)
 
-SaveManager:SetFolder("zEE Hub")
-InterfaceManager:SetFolder("zEE Hub")
+SaveManager:SetFolder("HieuDz Hub")
+InterfaceManager:SetFolder("HieuDz Hub")
 
 SaveManager:BuildConfigSection(Tabs.pageSettings)
 InterfaceManager:BuildInterfaceSection(Tabs.pageSettings)
@@ -2497,7 +2497,7 @@ task.spawn(function()
 end)
 
 Fluent:Notify({
-    Title = "zEE Hub",
+    Title = "HieuDz Hub",
     Content = "Anti AFK Is Actived",
     Duration = 5
 })
