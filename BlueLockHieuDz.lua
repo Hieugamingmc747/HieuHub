@@ -72,7 +72,7 @@ local function CreateToggle()
 
     local toggleButton = Instance.new("ImageButton")
     toggleButton.Name = "ToggleButton"
-    toggleButton.Image = "rbxassetid://112196145837803"
+    toggleButton.Image = "rbxassetid://111056848960723"
     toggleButton.ImageTransparency = 0.3
     toggleButton.AnchorPoint = Vector2.new(0.5, 0.5)
     toggleButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -170,7 +170,7 @@ local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.
 
 local Window = Fluent:CreateWindow({
     Title = "HieuDz Hub" .. " | ".."BlueLock : Rival".." | ".."[Version 4]",
-    SubTitle = "by HieuDz",
+    SubTitle = "by HieuDz Skid",
     TabWidth = 160,
     Size =  Device, --UDim2.fromOffset(480, 360), --default size (580, 460)
     Acrylic = false, -- à¸à¸²à¸£à¹€à¸šà¸¥à¸­à¸­à¸²à¸ˆà¸•à¸£à¸§à¸ˆà¸ˆà¸±à¸šà¹„à¸”à¹‰ à¸à¸²à¸£à¸•à¸±à¹‰à¸‡à¸„à¹ˆà¸²à¸™à¸µà¹‰à¹€à¸›à¹‡à¸™ false à¸ˆà¸°à¸›à¸´à¸”à¸à¸²à¸£à¹€à¸šà¸¥à¸­à¸—à¸±à¹‰à¸‡à¸«à¸¡à¸”
@@ -503,13 +503,13 @@ do
             if getgenv().Settings.EffectsDropdown ~= "" then
                 game:GetService("ReplicatedStorage").Packages.Knit.Services.CustomizationService.RE.Customize:FireServer("GoalEffects", getgenv().Settings.EffectsDropdown)
                 Fluent:Notify({
-                    Title = "zEE Hub",
+                    Title = "HieuDz Hub",
                     Content = "Your Wear Goal Effect "..tostring(getgenv().Settings.EffectsDropdown),
                     Duration = 5
                 })
             else
                 Fluent:Notify({
-                    Title = "zEE Hub",
+                    Title = "HieuDz Hub",
                     Content = "Please Select Goal Effect Before Use.",
                     Duration = 3
                 })
@@ -537,13 +537,13 @@ do
             if getgenv().Settings.CosmeticsDropdown ~= "" then
                 game:GetService("ReplicatedStorage").Packages.Knit.Services.CustomizationService.RE.Customize:FireServer("Cosmetics", getgenv().Settings.CosmeticsDropdown)
                 Fluent:Notify({
-                    Title = "zEE Hub",
+                    Title = "HieuDz Hub",
                     Content = "Your Wear Cosmetic "..tostring(getgenv().Settings.CosmeticsDropdown),
                     Duration = 5
                 })
             else
                 Fluent:Notify({
-                    Title = "zEE Hub",
+                    Title = "HieuDz Hub",
                     Content = "Please Select Cosmetic Before Use.",
                     Duration = 3
                 })
@@ -571,13 +571,13 @@ do
             if getgenv().Settings.CardsDropdown ~= "" then
                 game:GetService("ReplicatedStorage").Packages.Knit.Services.CustomizationService.RE.Customize:FireServer("Cards", getgenv().Settings.CardsDropdown)
                 Fluent:Notify({
-                    Title = "zEE Hub",
+                    Title = "HieuDz Hub",
                     Content = "Your Wear Card "..tostring(getgenv().Settings.CardsDropdown),
                     Duration = 5
                 })
             else
                 Fluent:Notify({
-                    Title = "zEE Hub",
+                    Title = "HieuDz Hub",
                     Content = "Please Select Card Before Use.",
                     Duration = 3
                 })
