@@ -119,7 +119,7 @@ function checkDevice()
                 end
             end)
             game:GetService("CoreGui").ChildRemoved:Connect(function(Value)
-                if Value.Name == "zEE Hub" then
+                if Value.Name == "HieuDz Hub" then
                     zEEToggle.Parent.Parent:Destroy()
                 end
             end)
