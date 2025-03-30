@@ -2770,7 +2770,7 @@ task.spawn(function()
     end
 end);
 local v49 = v16.Main:AddToggle("ToggleLevel", {
-    Title = "Cày Cấp",
+    Title = "Farm Levels",
     Description = "",
     Default = false
 });
@@ -3279,7 +3279,7 @@ end
 if Sea3 then
     local v490 = v16.Main:AddSection("Tư Lệnh Bánh");
     local v491 = v16.Main:AddParagraph({
-        Title = "Trạng Thái Nó Ra",
+        Title = "Trạng Thái Katakuri",
         Content = ""
     });
     spawn(function()
@@ -3298,7 +3298,7 @@ if Sea3 then
         end
     end);
     local v492 = v16.Main:AddToggle("ToggleCake", {
-        Title = "Cày Tư Lệnh Bánh",
+        Title = "Farm Katakuri",
         Description = "",
         Default = false
     });
