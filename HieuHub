@@ -96,7 +96,7 @@ local v7 = CreateObject("ImageLabel", {
     Name = "UserImage",
     Parent = v6,
     BackgroundTransparency = 1,
-    Image = "rbxassetid://83190276951914",
+    Image = "rbxassetid://79719261171890",
     Position = UDim2.new(0, 15, 0, 10),
     Size = UDim2.new(0, 50, 0, 50)
 });
@@ -326,7 +326,7 @@ local v16 = {
         Title = "Thông Tin"
     }),
     Main = v15:AddTab({
-        Title = "Cày"
+        Title = "Farm"
     }),
     Sea = v15:AddTab({
         Title = "Sự Kiện"
@@ -350,7 +350,7 @@ local v16 = {
         Title = "Dịch Chuyển"
     }),
     Visual = v15:AddTab({
-        Title = "Giả"
+        Title = "Fake Chỉ Số"
     }),
     Fruit = v15:AddTab({
         Title = "Trái"
@@ -359,7 +359,7 @@ local v16 = {
         Title = "Tập Kích"
     }),
     Race = v15:AddTab({
-        Title = "Tộc"
+        Title = "Tộc V4"
     }),
     Shop = v15:AddTab({
         Title = "Cửa Hàng"
