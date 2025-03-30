@@ -343,46 +343,46 @@ local v16 = {
         Title = "Thông Tin"
     }),
     Main = v15:AddTab({
-        Title = "Cày"
+        Title = "Tab Farming"
     }),
     Sea = v15:AddTab({
-        Title = "Sự Kiện"
+        Title = "Tab Event"
     }),
     ITM = v15:AddTab({
-        Title = "Vật Phẩm"
+        Title = "Tab Item"
     }),
     Setting = v15:AddTab({
-        Title = "Cài Đặt"
+        Title = "Tab Setting"
     }),
     Status = v15:AddTab({
-        Title = "Máy Chủ"
+        Title = "Tab Server"
     }),
     Stats = v15:AddTab({
-        Title = "Chỉ Số"
+        Title = "Tab Chỉ Số"
     }),
     Player = v15:AddTab({
-        Title = "Người Chơi"
+        Title = "Tab Player"
     }),
     Teleport = v15:AddTab({
-        Title = "Dịch Chuyển"
+        Title = "Teleporter"
     }),
     Visual = v15:AddTab({
-        Title = "Giả"
+        Title = "Tab Fake Chỉ Số"
     }),
     Fruit = v15:AddTab({
-        Title = "Trái"
+        Title = "Tab Fruits"
     }),
     Raid = v15:AddTab({
-        Title = "Tập Kích"
+        Title = "Tab Raid"
     }),
     Race = v15:AddTab({
-        Title = "Tộc"
+        Title = "Tab Race V4"
     }),
     Shop = v15:AddTab({
-        Title = "Cửa Hàng"
+        Title = "Tab Shop"
     }),
     Misc = v15:AddTab({
-        Title = "Khác"
+        Title = "Tab Khác"
     })
 };
 local v17 = v14.Options;
