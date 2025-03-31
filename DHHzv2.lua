@@ -27,13 +27,13 @@ ScreenGui.Name = "ModernLoader"
 ScreenGui.Parent = CoreGui
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
--- Tạo khung chính (nhỏ gọn, bo tròn 4 góc, trong suốt nhẹ)
+-- Tạo khung chính (nhỏ gọn, bo tròn 4 góc, mờ nhẹ)
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "LoaderFrame"
 MainFrame.Size = UDim2.new(0, 0, 0, 0)
 MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-MainFrame.BackgroundTransparency = 0.7 -- Trong suốt nhẹ
+MainFrame.BackgroundTransparency = 0.3 -- Giảm độ mờ (trước là 0.7)
 MainFrame.Parent = ScreenGui
 
 local Gradient = Instance.new("UIGradient")
@@ -62,20 +62,20 @@ local LogoCorner = Instance.new("UICorner")
 LogoCorner.CornerRadius = UDim.new(0, 20) -- Bo tròn logo
 LogoCorner.Parent = Logo
 
--- Tạo tiêu đề kêu gọi đăng ký và join Discord (điều chỉnh kích thước và vị trí để không tràn)
+-- Tạo tiêu đề kêu gọi đăng ký và join Discord
 local Title = Instance.new("TextLabel")
 Title.Name = "LoaderTitle"
-Title.Size = UDim2.new(0, 230, 0, 40) -- Thu nhỏ kích thước để không tràn
-Title.Position = UDim2.new(0, 60, 0, 15) -- Dịch sang phải để không đè logo
+Title.Size = UDim2.new(0, 230, 0, 40)
+Title.Position = UDim2.new(0, 60, 0, 15)
 Title.BackgroundTransparency = 1
 Title.Text = "Đăng Ký Ducknovis & Join Discord!"
 Title.Font = Enum.Font.GothamBold
-Title.TextSize = 14 -- Giảm kích thước chữ
+Title.TextSize = 14
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.TextTransparency = 1
 Title.TextXAlignment = Enum.TextXAlignment.Left
-Title.TextScaled = true -- Tự động co chữ nếu vẫn tràn
-Title.TextTruncate = Enum.TextTruncate.AtEnd -- Cắt chữ nếu tràn
+Title.TextScaled = true
+Title.TextTruncate = Enum.TextTruncate.AtEnd
 Title.Parent = MainFrame
 
 -- Tạo thanh tiến trình
@@ -85,7 +85,7 @@ ProgressBarBG.Size = UDim2.new(0, 280, 0, 15)
 ProgressBarBG.Position = UDim2.new(0.5, 0, 0, 60)
 ProgressBarBG.AnchorPoint = Vector2.new(0.5, 0)
 ProgressBarBG.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-ProgressBarBG.BackgroundTransparency = 0.7 -- Trong suốt nhẹ
+ProgressBarBG.BackgroundTransparency = 0.3 -- Giảm độ mờ (trước là 0.7)
 ProgressBarBG.Parent = MainFrame
 
 local ProgressBar = Instance.new("Frame")
@@ -126,14 +126,14 @@ local function TweenObject(obj, duration, properties)
 end
 
 -- Animation loading
-TweenObject(MainFrame, 0.3, {Size = UDim2.new(0, 320, 0, 110)}) -- Kích thước nhỏ gọn hơn
+TweenObject(MainFrame, 0.3, {Size = UDim2.new(0, 320, 0, 110)})
 wait(0.3)
 
 TweenObject(Logo, 0.5, {ImageTransparency = 0})
 TweenObject(Title, 0.5, {TextTransparency = 0})
 wait(0.5)
 
-TweenObject(ProgressBarBG, 0.5, {BackgroundTransparency = 0.5})
+TweenObject(ProgressBarBG, 0.5, {BackgroundTransparency = 0.1}) -- Đậm hơn khi hiển thị (trước là 0.5)
 TweenObject(ProgressBar, 0.5, {Size = UDim2.new(0.3, 0, 1, 0)}) -- Bắt đầu 30%
 wait(0.5)
 
