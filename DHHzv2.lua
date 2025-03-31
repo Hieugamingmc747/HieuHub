@@ -17,7 +17,7 @@ local function detectExecutor()
     return "không xác định được cấp độ hack"
 end
 executorName = detectExecutor()
--- Hiệu ứng loading hiện đại và nhỏ gọn
+-- Hiệu ứng loading hiện đại và chuyên nghiệp
 local TweenService = game:GetService("TweenService")
 local CoreGui = game:GetService("CoreGui")
 
@@ -27,7 +27,7 @@ ScreenGui.Name = "ModernLoader"
 ScreenGui.Parent = CoreGui
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
--- Tạo khung chính (nhỏ gọn hơn, bo tròn 4 góc, trong suốt nhẹ)
+-- Tạo khung chính (nhỏ gọn, bo tròn 4 góc, trong suốt nhẹ)
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "LoaderFrame"
 MainFrame.Size = UDim2.new(0, 0, 0, 0)
@@ -51,36 +51,38 @@ Corner.Parent = MainFrame
 -- Tạo logo YouTube
 local Logo = Instance.new("ImageLabel")
 Logo.Name = "YoutubeLogo"
-Logo.Size = UDim2.new(0, 50, 0, 50)
-Logo.Position = UDim2.new(0, 15, 0, 10)
+Logo.Size = UDim2.new(0, 40, 0, 40)
+Logo.Position = UDim2.new(0, 10, 0, 10)
 Logo.BackgroundTransparency = 1
 Logo.Image = "http://www.roblox.com/asset/?id=74685297119537" -- Logo YouTube của bạn
 Logo.ImageTransparency = 1
 Logo.Parent = MainFrame
 
 local LogoCorner = Instance.new("UICorner")
-LogoCorner.CornerRadius = UDim.new(0, 25) -- Bo tròn logo
+LogoCorner.CornerRadius = UDim.new(0, 20) -- Bo tròn logo
 LogoCorner.Parent = Logo
 
--- Tạo tiêu đề kêu gọi đăng ký và join Discord
+-- Tạo tiêu đề kêu gọi đăng ký và join Discord (điều chỉnh kích thước và vị trí để không tràn)
 local Title = Instance.new("TextLabel")
 Title.Name = "LoaderTitle"
-Title.Size = UDim2.new(0, 200, 0, 50)
-Title.Position = UDim2.new(0, 75, 0, 10)
+Title.Size = UDim2.new(0, 230, 0, 40) -- Thu nhỏ kích thước để không tràn
+Title.Position = UDim2.new(0, 60, 0, 15) -- Dịch sang phải để không đè logo
 Title.BackgroundTransparency = 1
 Title.Text = "Đăng Ký Ducknovis & Join Discord!"
 Title.Font = Enum.Font.GothamBold
-Title.TextSize = 16
+Title.TextSize = 14 -- Giảm kích thước chữ
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.TextTransparency = 1
 Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.TextScaled = true -- Tự động co chữ nếu vẫn tràn
+Title.TextTruncate = Enum.TextTruncate.AtEnd -- Cắt chữ nếu tràn
 Title.Parent = MainFrame
 
 -- Tạo thanh tiến trình
 local ProgressBarBG = Instance.new("Frame")
 ProgressBarBG.Name = "ProgressBarBG"
-ProgressBarBG.Size = UDim2.new(0, 260, 0, 15)
-ProgressBarBG.Position = UDim2.new(0.5, 0, 0, 70)
+ProgressBarBG.Size = UDim2.new(0, 280, 0, 15)
+ProgressBarBG.Position = UDim2.new(0.5, 0, 0, 60)
 ProgressBarBG.AnchorPoint = Vector2.new(0.5, 0)
 ProgressBarBG.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 ProgressBarBG.BackgroundTransparency = 0.7 -- Trong suốt nhẹ
@@ -107,12 +109,12 @@ BarCorner:Clone().Parent = ProgressBar
 -- Tạo dòng chữ nhỏ phía dưới
 local PoweredBy = Instance.new("TextLabel")
 PoweredBy.Name = "PoweredBy"
-PoweredBy.Size = UDim2.new(0, 260, 0, 20)
-PoweredBy.Position = UDim2.new(0.5, 0, 0, 95)
+PoweredBy.Size = UDim2.new(0, 280, 0, 20)
+PoweredBy.Position = UDim2.new(0.5, 0, 0, 85)
 PoweredBy.AnchorPoint = Vector2.new(0.5, 0)
 PoweredBy.BackgroundTransparency = 1
 PoweredBy.Text = "Script Powered By HieuDz * DuckNoVis"
-PoweredBy.Font = Enum.Font.SourceSans
+PoweredBy.Font = Enum.Font.SourceSansItalic
 PoweredBy.TextSize = 12
 PoweredBy.TextColor3 = Color3.fromRGB(180, 180, 255)
 PoweredBy.TextTransparency = 1
@@ -124,7 +126,7 @@ local function TweenObject(obj, duration, properties)
 end
 
 -- Animation loading
-TweenObject(MainFrame, 0.3, {Size = UDim2.new(0, 300, 0, 120)}) -- Kích thước nhỏ gọn hơn
+TweenObject(MainFrame, 0.3, {Size = UDim2.new(0, 320, 0, 110)}) -- Kích thước nhỏ gọn hơn
 wait(0.3)
 
 TweenObject(Logo, 0.5, {ImageTransparency = 0})
@@ -136,14 +138,16 @@ TweenObject(ProgressBar, 0.5, {Size = UDim2.new(0.3, 0, 1, 0)}) -- Bắt đầu 
 wait(0.5)
 
 -- Thanh tiến trình chạy mượt mà
-TweenObject(ProgressBar, 1, {Size = UDim2.new(0.6, 0, 1, 0)}) -- 60%
+TweenObject(ProgressBar, 1, {Size = UDim2.new(0.7, 0, 1, 0)}) -- 70%
 wait(1)
+
+-- Hiển thị PoweredBy khi thanh tiến trình đạt 70%
+TweenObject(PoweredBy, 0.5, {TextTransparency = 0})
+wait(0.5)
+
 TweenObject(ProgressBar, 0.8, {Size = UDim2.new(0.9, 0, 1, 0)}) -- 90%
 wait(0.8)
 TweenObject(ProgressBar, 0.5, {Size = UDim2.new(1, 0, 1, 0)}) -- 100%
-wait(0.5)
-
-TweenObject(PoweredBy, 0.5, {TextTransparency = 0})
 wait(0.5)
 
 -- Hiệu ứng mờ dần và xóa
