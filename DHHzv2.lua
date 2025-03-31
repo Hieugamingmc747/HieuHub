@@ -17,8 +17,7 @@ local function detectExecutor()
     return "không xác định được cấp độ hack"
 end
 executorName = detectExecutor()
-
--- Hiệu ứng loading hiện đại
+-- Hiệu ứng loading hiện đại và nhỏ gọn
 local TweenService = game:GetService("TweenService")
 local CoreGui = game:GetService("CoreGui")
 
@@ -28,79 +27,96 @@ ScreenGui.Name = "ModernLoader"
 ScreenGui.Parent = CoreGui
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
--- Tạo khung chính với gradient
+-- Tạo khung chính (nhỏ gọn hơn, bo tròn 4 góc, trong suốt nhẹ)
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "LoaderFrame"
 MainFrame.Size = UDim2.new(0, 0, 0, 0)
 MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-MainFrame.BackgroundTransparency = 1
+MainFrame.BackgroundTransparency = 0.7 -- Trong suốt nhẹ
 MainFrame.Parent = ScreenGui
 
 local Gradient = Instance.new("UIGradient")
 Gradient.Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(10, 10, 30)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 50, 150))
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(20, 20, 60)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(60, 60, 180))
 })
 Gradient.Rotation = 45
 Gradient.Parent = MainFrame
 
+local Corner = Instance.new("UICorner")
+Corner.CornerRadius = UDim.new(0, 12) -- Bo tròn 4 góc
+Corner.Parent = MainFrame
+
+-- Tạo logo YouTube
+local Logo = Instance.new("ImageLabel")
+Logo.Name = "YoutubeLogo"
+Logo.Size = UDim2.new(0, 50, 0, 50)
+Logo.Position = UDim2.new(0, 15, 0, 10)
+Logo.BackgroundTransparency = 1
+Logo.Image = "http://www.roblox.com/asset/?id=74685297119537" -- Logo YouTube của bạn
+Logo.ImageTransparency = 1
+Logo.Parent = MainFrame
+
+local LogoCorner = Instance.new("UICorner")
+LogoCorner.CornerRadius = UDim.new(0, 25) -- Bo tròn logo
+LogoCorner.Parent = Logo
+
+-- Tạo tiêu đề kêu gọi đăng ký và join Discord
+local Title = Instance.new("TextLabel")
+Title.Name = "LoaderTitle"
+Title.Size = UDim2.new(0, 200, 0, 50)
+Title.Position = UDim2.new(0, 75, 0, 10)
+Title.BackgroundTransparency = 1
+Title.Text = "Đăng Ký Ducknovis & Join Discord!"
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 16
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextTransparency = 1
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.Parent = MainFrame
+
 -- Tạo thanh tiến trình
 local ProgressBarBG = Instance.new("Frame")
 ProgressBarBG.Name = "ProgressBarBG"
-ProgressBarBG.Size = UDim2.new(0.8, 0, 0, 20)
-ProgressBarBG.Position = UDim2.new(0.5, 0, 0.7, 0)
-ProgressBarBG.AnchorPoint = Vector2.new(0.5, 0.5)
-ProgressBarBG.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-ProgressBarBG.BackgroundTransparency = 0.5
+ProgressBarBG.Size = UDim2.new(0, 260, 0, 15)
+ProgressBarBG.Position = UDim2.new(0.5, 0, 0, 70)
+ProgressBarBG.AnchorPoint = Vector2.new(0.5, 0)
+ProgressBarBG.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+ProgressBarBG.BackgroundTransparency = 0.7 -- Trong suốt nhẹ
 ProgressBarBG.Parent = MainFrame
 
 local ProgressBar = Instance.new("Frame")
 ProgressBar.Name = "ProgressBar"
 ProgressBar.Size = UDim2.new(0, 0, 1, 0)
-ProgressBar.BackgroundColor3 = Color3.fromRGB(0, 255, 100)
+ProgressBar.BackgroundColor3 = Color3.fromRGB(0, 255, 150)
 ProgressBar.Parent = ProgressBarBG
 
 local BarGradient = Instance.new("UIGradient")
 BarGradient.Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 100)),
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 150)),
     ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 150, 255))
 })
 BarGradient.Parent = ProgressBar
 
-local Corner = Instance.new("UICorner")
-Corner.CornerRadius = UDim.new(0, 10)
-Corner.Parent = ProgressBarBG
-Corner:Clone().Parent = ProgressBar
+local BarCorner = Instance.new("UICorner")
+BarCorner.CornerRadius = UDim.new(0, 8) -- Bo tròn thanh tiến trình
+BarCorner.Parent = ProgressBarBG
+BarCorner:Clone().Parent = ProgressBar
 
--- Tạo tiêu đề
-local Title = Instance.new("TextLabel")
-Title.Name = "LoaderTitle"
-Title.Size = UDim2.new(0, 300, 0, 50)
-Title.Position = UDim2.new(0.5, 0, 0.4, 0)
-Title.AnchorPoint = Vector2.new(0.5, 0.5)
-Title.BackgroundTransparency = 1
-Title.Text = "DHHz Hub - Loading..."
-Title.Font = Enum.Font.SourceSansBold
-Title.TextSize = 28
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.TextStrokeTransparency = 0.8
-Title.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
-Title.Parent = MainFrame
-
--- Tạo chữ phụ
-local SubText = Instance.new("TextLabel")
-SubText.Name = "SubText"
-SubText.Size = UDim2.new(0, 300, 0, 30)
-SubText.Position = UDim2.new(0.5, 0, 0.55, 0)
-SubText.AnchorPoint = Vector2.new(0.5, 0.5)
-SubText.BackgroundTransparency = 1
-SubText.Text = "Powered by HieuDz * DuckNoVis"
-SubText.Font = Enum.Font.SourceSans
-SubText.TextSize = 18
-SubText.TextColor3 = Color3.fromRGB(200, 200, 255)
-SubText.TextTransparency = 1
-SubText.Parent = MainFrame
+-- Tạo dòng chữ nhỏ phía dưới
+local PoweredBy = Instance.new("TextLabel")
+PoweredBy.Name = "PoweredBy"
+PoweredBy.Size = UDim2.new(0, 260, 0, 20)
+PoweredBy.Position = UDim2.new(0.5, 0, 0, 95)
+PoweredBy.AnchorPoint = Vector2.new(0.5, 0)
+PoweredBy.BackgroundTransparency = 1
+PoweredBy.Text = "Script Powered By HieuDz * DuckNoVis"
+PoweredBy.Font = Enum.Font.SourceSans
+PoweredBy.TextSize = 12
+PoweredBy.TextColor3 = Color3.fromRGB(180, 180, 255)
+PoweredBy.TextTransparency = 1
+PoweredBy.Parent = MainFrame
 
 -- Hàm tạo hiệu ứng tween
 local function TweenObject(obj, duration, properties)
@@ -108,33 +124,36 @@ local function TweenObject(obj, duration, properties)
 end
 
 -- Animation loading
-TweenObject(MainFrame, 0.5, {Size = UDim2.new(0, 400, 0, 250), BackgroundTransparency = 0.2})
-wait(0.5)
+TweenObject(MainFrame, 0.3, {Size = UDim2.new(0, 300, 0, 120)}) -- Kích thước nhỏ gọn hơn
+wait(0.3)
 
+TweenObject(Logo, 0.5, {ImageTransparency = 0})
 TweenObject(Title, 0.5, {TextTransparency = 0})
-TweenObject(SubText, 0.5, {TextTransparency = 0})
 wait(0.5)
 
--- Thanh tiến trình chạy
-local keyframes = {
-    {time = 1, percent = 0.3},
-    {time = 1.5, percent = 0.6},
-    {time = 1, percent = 0.9},
-    {time = 0.5, percent = 1}
-}
+TweenObject(ProgressBarBG, 0.5, {BackgroundTransparency = 0.5})
+TweenObject(ProgressBar, 0.5, {Size = UDim2.new(0.3, 0, 1, 0)}) -- Bắt đầu 30%
+wait(0.5)
 
-for _, frame in pairs(keyframes) do
-    TweenObject(ProgressBar, frame.time, {Size = UDim2.new(frame.percent, 0, 1, 0)})
-    wait(frame.time)
-end
+-- Thanh tiến trình chạy mượt mà
+TweenObject(ProgressBar, 1, {Size = UDim2.new(0.6, 0, 1, 0)}) -- 60%
+wait(1)
+TweenObject(ProgressBar, 0.8, {Size = UDim2.new(0.9, 0, 1, 0)}) -- 90%
+wait(0.8)
+TweenObject(ProgressBar, 0.5, {Size = UDim2.new(1, 0, 1, 0)}) -- 100%
+wait(0.5)
+
+TweenObject(PoweredBy, 0.5, {TextTransparency = 0})
+wait(0.5)
 
 -- Hiệu ứng mờ dần và xóa
+TweenObject(Logo, 0.5, {ImageTransparency = 1})
 TweenObject(Title, 0.5, {TextTransparency = 1})
-TweenObject(SubText, 0.5, {TextTransparency = 1})
 TweenObject(ProgressBarBG, 0.5, {BackgroundTransparency = 1})
 TweenObject(ProgressBar, 0.5, {BackgroundTransparency = 1})
-TweenObject(MainFrame, 0.5, {Size = UDim2.new(0, 0, 0, 0), BackgroundTransparency = 1})
-wait(0.5)
+TweenObject(PoweredBy, 0.5, {TextTransparency = 1})
+TweenObject(MainFrame, 0.3, {Size = UDim2.new(0, 0, 0, 0)})
+wait(0.3)
 
 ScreenGui:Destroy()
 -- spawn(function()
